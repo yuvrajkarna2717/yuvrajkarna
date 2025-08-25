@@ -1,0 +1,235 @@
+
+
+
+# useClickOutside
+
+A hook that detects clicks outside of a specified element. Perfect for closing modals, dropdowns, tooltips, and other overlay components.
+
+## Installation
+
+```bash
+npm install react-hook-granth
+```
+
+## Basic Usage
+
+```tsx
+import { useClickOutside } from 'react-hook-granth';
+import { useState } from 'react';
+
+function Dropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useClickOutside<HTMLDivElement>(() => {
+    setIsOpen(false);
+  });
+
+  return (
+    <div ref={ref}>
+      <button onClick={() => setIsOpen(!isOpen)}>
+        Toggle Dropdown
+      </button>
+      {isOpen && (
+        <div className="dropdown-menu">
+          <p>Dropdown content</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## API Reference
+
+### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `callback` | `() => void` | Function to call when clicking outside |
+
+### Return Value
+
+| Type | Description |
+|------|-------------|
+| `RefObject<T>` | Ref object to attach to the target element |
+
+## Advanced Usage
+
+### Multiple Elements
+
+```tsx
+function MultipleDropdowns() {
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
+  const dropdown1Ref = useClickOutside(() => {
+    if (activeDropdown === 'dropdown1') {
+      setActiveDropdown(null);
+    }
+  });
+  
+  const dropdown2Ref = useClickOutside(() => {
+    if (activeDropdown === 'dropdown2') {
+      setActiveDropdown(null);
+    }
+  });
+
+  return (
+    <div>
+      <div ref={dropdown1Ref}>
+        <button onClick={() => setActiveDropdown('dropdown1')}>
+          Dropdown 1
+        </button>
+        {activeDropdown === 'dropdown1' && (
+          <div>Dropdown 1 content</div>
+        )}
+      </div>
+      
+      <div ref={dropdown2Ref}>
+        <button onClick={() => setActiveDropdown('dropdown2')}>
+          Dropdown 2
+        </button>
+        {activeDropdown === 'dropdown2' && (
+          <div>Dropdown 2 content</div>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+### Context Menu
+
+```tsx
+function ContextMenu() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  
+  const menuRef = useClickOutside(() => setIsVisible(false));
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setPosition({ x: e.clientX, y: e.clientY });
+    setIsVisible(true);
+  };
+
+  return (
+    <div>
+      <div onContextMenu={handleContextMenu}>
+        Right-click me for context menu
+      </div>
+      
+      {isVisible && (
+        <div
+          ref={menuRef}
+          style={{ left: position.x, top: position.y }}
+          className="fixed bg-white border shadow-lg"
+        >
+          <button onClick={() => console.log('Copy')}>Copy</button>
+          <button onClick={() => console.log('Paste')}>Paste</button>
+          <button onClick={() => console.log('Delete')}>Delete</button>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### Tooltip with Click Outside
+
+```tsx
+function TooltipComponent() {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipRef = useClickOutside(() => setShowTooltip(false));
+
+  return (
+    <div className="relative inline-block">
+      <button
+        onClick={() => setShowTooltip(!showTooltip)}
+        onMouseEnter={() => setShowTooltip(true)}
+      >
+        Hover or click me
+      </button>
+      
+      {showTooltip && (
+        <div
+          ref={tooltipRef}
+          className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-sm rounded"
+        >
+          This is a tooltip!
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## Use Cases
+
+- **Dropdown Menus**: Close when clicking outside
+- **Modal Dialogs**: Dismiss on backdrop click
+- **Tooltips**: Hide when clicking elsewhere
+- **Context Menus**: Close on outside interaction
+- **Popover Components**: Auto-close behavior
+- **Mobile Navigation**: Close sidebar on outside tap
+- **Date Pickers**: Close calendar on outside click
+- **Search Suggestions**: Hide results when clicking away
+
+## Best Practices
+
+### Performance Optimization
+
+```tsx
+// Use useCallback to prevent unnecessary re-renders
+const handleClickOutside = useCallback(() => {
+  setIsOpen(false);
+}, []);
+
+const ref = useClickOutside(handleClickOutside);
+```
+
+### Conditional Behavior
+
+```tsx
+function ConditionalClickOutside() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isPinned, setIsPinned] = useState(false);
+  
+  const ref = useClickOutside(() => {
+    // Only close if not pinned
+    if (!isPinned) {
+      setIsOpen(false);
+    }
+  });
+
+  return (
+    <div ref={ref}>
+      {/* Component content */}
+    </div>
+  );
+}
+```
+
+## TypeScript
+
+The hook supports generic types for different HTML elements:
+
+```tsx
+// For div elements
+const divRef = useClickOutside<HTMLDivElement>(() => {});
+
+// For button elements
+const buttonRef = useClickOutside<HTMLButtonElement>(() => {});
+
+// For any HTML element (default)
+const elementRef = useClickOutside(() => {});
+```
+
+## Browser Compatibility
+
+This hook uses the `mousedown` event and `contains` method, which are supported in all modern browsers including:
+
+- Chrome 1+
+- Firefox 1+
+- Safari 1+
+- Edge 12+
+- Internet Explorer 9+

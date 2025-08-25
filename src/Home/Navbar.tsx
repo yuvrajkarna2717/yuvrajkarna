@@ -8,6 +8,7 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
+    { name: "Blog", to: "/blogs" }, 
   ];
 
   return (
@@ -17,7 +18,7 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <ul className="hidden md:flex space-x-8">
-          {navItems.map((item) => (
+          {navItems?.map((item) => (
             <li key={item.to}>
               <a
                 href={item.to}
