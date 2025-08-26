@@ -42,38 +42,19 @@ export default function Hero() {
         </p>
 
         {/* About Summary */}
-        <p className="text-gray-600 text-lg leading-relaxed mb-8 tracking-widest md:text-xl ">
-          Specializing in creating{" "}
+        <p className="text-gray-600 text-lg leading-relaxed mb-8 tracking-widest md:text-xl py-4">
+          I specialize in{" "}
           <span className="text-black font-medium hover:underline">
-            scalable web applications
+            scalable, clean, and user-focused web applications
+          </span>{" "}
+          that merge{" "}
+          <span className="text-black font-medium hover:underline">
+            technical excellence
           </span>{" "}
           with{" "}
           <span className="text-black font-medium hover:underline">
-            clean architecture
-          </span>{" "}
-          and{" "}
-          <span className="text-black font-medium hover:underline">
-            responsive interfaces.
+            great design.
           </span>
-          <p className="hidden md:block">
-            Experienced in bridging{" "}
-            <span className="text-black font-medium hover:underline">
-              multiple development paradigms
-            </span>{" "}
-            to deliver{" "}
-            <span className="text-black font-medium hover:underline">
-              optimized solutions
-            </span>{" "}
-            that balance{" "}
-            <span className="text-black font-medium hover:underline">
-              technical excellence
-            </span>{" "}
-            with{" "}
-            <span className="text-black font-medium hover:underline">
-              exceptional user experience
-            </span>
-            .
-          </p>
         </p>
 
         {/* Social Links */}
@@ -95,7 +76,7 @@ export default function Hero() {
             <FaLinkedin />
           </a>
           <a
-            href="https://facebook.com/share/1dtHplniqd"
+            href="https://facebook.com/yuvraj.karna.9"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 hover:text-gray-700 transition"
@@ -103,7 +84,7 @@ export default function Hero() {
             <FaFacebook />
           </a>
           <a
-            href="https://instagram.com/yuvrajkarna27"
+            href="https://instagram.com/yuvrajkarna_"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 hover:text-gray-700 transition"
@@ -119,15 +100,28 @@ export default function Hero() {
             <FaTwitter />
           </a>
         </div>
-        <button className="bg-black text-white px-6 py-2 mt-10 rounded-full ">
-          <a
-            href="/resume/YuvrajKarna.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div className="flex justify-around items-center gap-6 mt-10">
+          <button
+            className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition"
+            aria-label="Resume"
           >
-            Resume
-          </a>
-        </button>
+            <a
+              href="/resume/YuvrajKarna.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Resume
+            </a>
+          </button>
+          <button type="button" aria-label="Contact Me">
+            <a
+              href="mailto:yuvrajkarna.code@gmail.com"
+              className="bg-black text-white px-6 py-2 mt-10 rounded-full hover:bg-gray-800 transition"
+            >
+              Contact Me
+            </a>
+          </button>
+        </div>
 
         <div className="flex items-center justify-center sm:mt-5 lg:mt-10 mt-4">
           <button className="flex flex-col justify-center items-center gap-3">

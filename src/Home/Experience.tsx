@@ -35,7 +35,7 @@ export default function Experience() {
               <h3 className="text-2xl md:text-3xl font-bold text-gray-800">
                 Iquadra information services LLC
               </h3>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-black">
                 June 2024 – Present
               </span>
             </div>
@@ -47,7 +47,7 @@ export default function Experience() {
             </div>
 
             {/* Tech Stack Pills */}
-            <div className="flex flex-wrap gap-2 mb-6">
+            {/* <div className="flex flex-wrap gap-2 mb-6">
               {techStack.map((tech, idx) => (
                 <span
                   key={idx}
@@ -56,7 +56,7 @@ export default function Experience() {
                   {tech}
                 </span>
               ))}
-            </div>
+            </div> */}
 
             {/* Achievements with modern styling */}
             <div className="space-y-4 my-8">
