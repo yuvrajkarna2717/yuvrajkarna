@@ -17,22 +17,9 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <div className="md:p-8 text-left md:flex md:items-center md:gap-10 mb-12">
-      {/* Project Image */}
-      {/* {project.title !== "React-hook-granth" && project.image && (
-        <div className="flex-shrink-0 mb-6 md:mb-0">
-          <img
-            src={project.image}
-            alt={project.title + " Screenshot"}
-            className="rounded-lg shadow-md w-full md:w-80"
-          />
-        </div>
-      )} */}
-
       {/* Project Content */}
       <div className="flex-1">
-        <h3 className="text-2xl font-bold text-black mb-4">   
-          {project.title}
-        </h3>
+        <h3 className="text-2xl font-bold text-black mb-4">{project.title}</h3>
 
         <p className="text-gray-700 mb-4">{project.description}</p>
 

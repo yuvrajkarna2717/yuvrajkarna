@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Define skill interface
 interface Skill {
@@ -13,8 +13,8 @@ const skills: Skill[] = [
   { name: "JavaScript", icon: "javascript", category: "frontend" },
   { name: "React.js", icon: "react", category: "frontend" },
   { name: "TypeScript", icon: "typescript", category: "frontend" },
-  { name: "TailwindCSS", icon: "tailwind", category: "frontend" },
   { name: "Next.js", icon: "nextjs", category: "frontend" },
+  { name: "TailwindCSS", icon: "tailwind", category: "frontend" },
   { name: "Bootstrap", icon: "bootstrap", category: "frontend" },
 
   // Backend
@@ -33,13 +33,21 @@ const skills: Skill[] = [
   { name: "Docker", icon: "docker", category: "tools" },
   { name: "Jest", icon: "jest", category: "tools" },
   { name: "CI/CD", icon: "cicd", category: "tools" },
+  { name: "Github", icon: "github", category: "tools" },
   { name: "Jenkins", icon: "jenkins", category: "tools" },
 ];
 
 const SkillsDisplay: React.FC = () => {
-  // Split skills into two rows
-  const firstRowSkills = skills.slice(0, Math.ceil(skills.length / 2));
-  const secondRowSkills = skills.slice(Math.ceil(skills.length / 2));
+  const [showAllSkills, setShowAllSkills] = useState(false);
+
+  // Number of skills to show initially on mobile
+  const MOBILE_INITIAL_COUNT = 8;
+
+  // Determine which skills to display
+  const displayedSkills = showAllSkills
+    ? skills
+    : skills.slice(0, MOBILE_INITIAL_COUNT);
+  const hasMoreSkills = skills.length > MOBILE_INITIAL_COUNT;
 
   // Skill item component
   const SkillItem: React.FC<{ skill: Skill }> = ({ skill }) => (
@@ -68,24 +76,51 @@ const SkillsDisplay: React.FC = () => {
         </div>
       </div>
 
-      {/* Skills display in two rows */}
+      {/* Skills display */}
       <div className="max-w-6xl mx-auto px-4">
-        {/* First row */}
+        {/* Skills grid */}
         <div className="flex flex-wrap justify-center mb-4">
-          {firstRowSkills.map((skill, index) => (
-            <SkillItem key={`first-row-${index}`} skill={skill} />
+          {displayedSkills.map((skill, index) => (
+            <SkillItem key={`skill-${index}`} skill={skill} />
           ))}
         </div>
 
-        {/* Second row */}
-        <div className="flex flex-wrap justify-center">
-          {secondRowSkills.map((skill, index) => (
-            <SkillItem key={`second-row-${index}`} skill={skill} />
-          ))}
+        {/* Show More/Less button for mobile */}
+        {hasMoreSkills && (
+          <div className="flex justify-center items-center mt-6">
+            <button
+              onClick={() => setShowAllSkills(!showAllSkills)}
+              className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-gray-800 hover:shadow-lg"
+            >
+              <span>
+                {showAllSkills
+                  ? "Show Less"
+                  : `Show More (${skills.length - MOBILE_INITIAL_COUNT}+)`}
+              </span>
+              <svg
+                className={`w-4 h-4 transition-transform duration-300 ${
+                  showAllSkills ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* "and more" text for desktop */}
+        <div className="hidden md:flex justify-center items-center text-black mt-4">
+          and more.
         </div>
-       <div className="flex justify-center items-center text-black">and more.</div>
       </div>
-
     </div>
   );
 };
