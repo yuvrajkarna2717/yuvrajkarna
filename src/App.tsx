@@ -1,5 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Home from './Home/Home';
+import { Routes, Route, Navigate } from "react-router-dom";
+import Home from "./Home/Home";
 
 export default function App() {
   return (

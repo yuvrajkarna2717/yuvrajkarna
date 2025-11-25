@@ -209,7 +209,7 @@ export default function Project() {
   const filteredProjects =
     filter === "all"
       ? projects
-      : projects.filter((project) => project.category === filter);
+      : projects.filter(project => project.category === filter);
 
   return (
     <section
@@ -218,7 +218,9 @@ export default function Project() {
     >
       <div className="max-w-6xl mx-auto">
         <div className="animate-wiggle mb-16">
-          <p className="text-3xl md:text-4xl font-bold text-center text-black">Projects</p>
+          <p className="text-3xl md:text-4xl font-bold text-center text-black">
+            Projects
+          </p>
           <div className="flex flex-col items-center space-y-[2px] mt-1">
             <div className="h-[0.15rem] w-full max-w-[150px] bg-black"></div>
             <div className="h-[0.15rem] w-full max-w-[150px] bg-black"></div>

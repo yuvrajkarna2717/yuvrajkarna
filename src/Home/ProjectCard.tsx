@@ -30,9 +30,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
       {/* Project Content */}
       <div className="flex-1">
-        <h3 className="text-2xl font-bold text-black mb-4">   
-          {project.title}
-        </h3>
+        <h3 className="text-2xl font-bold text-black mb-4">{project.title}</h3>
 
         <p className="text-gray-700 mb-4">{project.description}</p>
 

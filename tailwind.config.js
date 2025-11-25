@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import typography from '@tailwindcss/typography'
+import typography from "@tailwindcss/typography";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   plugins: [typography],
@@ -10,34 +10,35 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(10px)" },
         },
-        "wiggle": {
+        wiggle: {
           "0%, 100%": { transform: "rotate(-5deg)" },
           "50%": { transform: "rotate(5deg)" },
         },
-        "fadeIn": {
-          '0%': {
+        fadeIn: {
+          "0%": {
             opacity: 0,
-            transform: 'translateY(50px) scale(0.90)',
-            filter: 'blur(4px)',
+            transform: "translateY(50px) scale(0.90)",
+            filter: "blur(4px)",
           },
-          '100%': {
+          "100%": {
             opacity: 1,
-            transform: 'translateY(0) scale(1)',
-            filter: 'blur(0)',
+            transform: "translateY(0) scale(1)",
+            filter: "blur(0)",
           },
         },
-        "growLine": {
-          '0%': { width: '0%' },
-          '100%': { width: '5rem' },
+        growLine: {
+          "0%": { width: "0%" },
+          "100%": { width: "5rem" },
         },
       },
       animation: {
         "arrow-bounce": "arrow-bounce 0.6s ease-in-out infinite",
-        "wiggle": "wiggle 0.5s ease-in-out infinite",
-        'fade-in': 'fadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-        'fade-in-delayed': 'fadeIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-        'fade-in-slow': 'fadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-        'grow': 'growLine 2s ease-out forwards',
+        wiggle: "wiggle 0.5s ease-in-out infinite",
+        "fade-in": "fadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "fade-in-delayed":
+          "fadeIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        "fade-in-slow": "fadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+        grow: "growLine 2s ease-out forwards",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -76,5 +77,4 @@ export default {
       },
     },
   },
- 
 };

@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="md:px-6 md:py-8 py-6 text-center text-black md:pb-20">
       <div className="flex flex-row items-center justify-center gap-3 sm:gap-2 text-xl sm:text-2xl">
         <p className="flex items-center gap-2">
-          Made with <FcLike className="w-6 h-6" /> by 
+          Made with <FcLike className="w-6 h-6" /> by
         </p>
         <a
           href="https://www.linkedin.com/in/yuvrajkarna" // Replace with your actual LinkedIn

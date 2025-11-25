@@ -23,8 +23,6 @@ const skills: Skill[] = [
   { name: "MongoDB", icon: "mongodb", category: "backend" },
   { name: "PostgreSQL", icon: "postgresql", category: "backend" },
   { name: "Redis", icon: "redis", category: "backend" },
-  { name: "GraphQL", icon: "graphql", category: "backend" },
-  { name: "REST API", icon: "api", category: "backend" },
   { name: "Firebase", icon: "firebase", category: "backend" },
   { name: "Nest.js", icon: "node", category: "backend" },
 
@@ -33,7 +31,7 @@ const skills: Skill[] = [
   { name: "Docker", icon: "docker", category: "tools" },
   { name: "Jest", icon: "jest", category: "tools" },
   { name: "CI/CD", icon: "cicd", category: "tools" },
-  { name: "Jenkins", icon: "jenkins", category: "tools" },
+  { name: "GitHub Actions", icon: "githubaction", category: "tools" },
 ];
 
 const SkillsDisplay: React.FC = () => {
