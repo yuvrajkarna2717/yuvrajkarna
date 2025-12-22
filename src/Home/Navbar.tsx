@@ -8,16 +8,17 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
+    { name: "Open Source Contributions", to: "#opensource" },
   ];
 
   return (
-    <nav id="home" className="w-full md:px-[10rem] px-10 py-10 text-black">
+    <nav id="home" className="w-full md:px-[10rem] px-6 py-10 text-black">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <img src={flower} alt="flower" className="w-10 h-10" />
 
         {/* Desktop Nav */}
         <ul className="hidden md:flex space-x-8">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <li key={item.to}>
               <a
                 href={item.to}
@@ -34,7 +35,6 @@ export default function Navbar() {
         <button
           className="md:hidden text-2xl z-50"
           onClick={() => {
-            console.log("clicked");
             setIsOpen(!isOpen);
           }}
         >
@@ -45,7 +45,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <ul className="md:hidden fixed top-20 left-0 w-full bg-white text-black z-[9999] shadow-md py-4 px-10 space-y-4">
-          {navItems.map((item) => (
+          {navItems.map(item => (
             <li key={item.to}>
               <a
                 href={item.to}
