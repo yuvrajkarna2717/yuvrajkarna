@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Define skill interface
 interface Skill {
@@ -35,50 +35,45 @@ const skills: Skill[] = [
 ];
 
 const SkillsDisplay: React.FC = () => {
-  // Function to get gradient class based on category
-  const getCategoryGradient = (category: string): string => {
-    switch (category) {
-      case "frontend":
-        return "from-indigo-500 to-purple-600";
-      case "backend":
-        return "from-blue-500 to-teal-400";
-      case "tools":
-        return "from-orange-500 to-pink-500";
-      default:
-        return "from-gray-500 to-gray-600";
-    }
-  };
+  const [showAll, setShowAll] = useState(false);
+  const INITIAL_SKILLS_COUNT = 8;
+  
+  const displayedSkills = showAll ? skills : skills.slice(0, INITIAL_SKILLS_COUNT);
 
-  // Split skills into two rows
-  const firstRowSkills = skills.slice(0, Math.ceil(skills.length / 2));
-  const secondRowSkills = skills.slice(Math.ceil(skills.length / 2));
-
-  // Skill item component
-  const SkillItem: React.FC<{ skill: Skill }> = ({ skill }) => (
-    <div className="flex items-center bg-white rounded-full px-5 py-3 mx-2 my-2 shadow-md border border-gray-200 transform transition-all duration-300 hover:scale-110 hover:shadow-lg">
+  // Skill item component with simple animations
+  const SkillItem: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) => (
+    <div 
+      className="flex items-center bg-white rounded-full px-5 py-3 mx-2 my-2 shadow-md border border-gray-200 transition-all duration-300 hover:shadow-xl animate-float"
+      style={{ animationDelay: `${index * 0.2}s` }}
+    >
       <div className="w-6 h-6 mr-2">
-        {/* Icon placeholder with category color */}
-        <div
-          className={`w-full h-full rounded-full bg-gradient-to-br ${getCategoryGradient(
-            skill.category
-          )} flex items-center justify-center text-white`}
-        >
+        <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white animate-pulse-slow">
           <span className="text-xs font-bold">{skill.name.charAt(0)}</span>
         </div>
       </div>
       <span className="font-medium text-sm text-gray-800">{skill.name}</span>
-
-      {/* Category indicator dot */}
-      <div
-        className={`ml-2 w-2 h-2 rounded-full bg-gradient-to-br ${getCategoryGradient(
-          skill.category
-        )}`}
-      ></div>
+      <div className="ml-2 w-2 h-2 rounded-full bg-black"></div>
     </div>
   );
 
   return (
     <div className="w-full py-12">
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-5px); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 2s ease-in-out infinite;
+        }
+      `}</style>
       <div className="max-w-5xl mx-auto px-6 mb-8">
         <div className="text-3xl md:text-4xl font-bold text-center mb-2 text-black">
           Skills & Technologies
@@ -88,36 +83,22 @@ const SkillsDisplay: React.FC = () => {
         </div>
       </div>
 
-      {/* Skills display in two rows */}
+      {/* Skills display with animations */}
       <div className="max-w-6xl mx-auto px-4">
-        {/* First row */}
-        <div className="flex flex-wrap justify-center mb-4">
-          {firstRowSkills.map((skill, index) => (
-            <SkillItem key={`first-row-${index}`} skill={skill} />
+        <div className="flex flex-wrap justify-center mb-6">
+          {displayedSkills.map((skill, index) => (
+            <SkillItem key={index} skill={skill} index={index} />
           ))}
         </div>
 
-        {/* Second row */}
-        <div className="flex flex-wrap justify-center">
-          {secondRowSkills.map((skill, index) => (
-            <SkillItem key={`second-row-${index}`} skill={skill} />
-          ))}
-        </div>
-
-        {/* Category legend */}
-        <div className="flex justify-center mt-8 gap-6">
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 mr-2"></div>
-            <span className="text-xs text-gray-600">Frontend</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-teal-400 mr-2"></div>
-            <span className="text-xs text-gray-600">Backend</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 mr-2"></div>
-            <span className="text-xs text-gray-600">Tools</span>
-          </div>
+        {/* Animated View All / View Less Button */}
+        <div className="flex justify-center">
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-200"
+          >
+            {showAll ? "View Less" : `View All (${skills.length - INITIAL_SKILLS_COUNT} more)`}
+          </button>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import Experience from "./Experience";
 import Footer from "./Footer";
 import Hero from "./Hero";
 import Navbar from "./Navbar";
+import OpenSource from "./OpenSource";
 import Project from "./Project";
 import SkillsSlider from "./SkillsSlider";
 
@@ -13,6 +14,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <SkillsSlider />
+      <OpenSource />
       <Experience />
       <Project />
       <AboutMe />

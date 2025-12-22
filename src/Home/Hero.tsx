@@ -12,7 +12,7 @@ import { SiHappycow } from "react-icons/si";
 export default function Hero() {
   return (
     <section className="flex items-center justify-center text-black md:mt-14 mt-10">
-      <div className="text-center max-w-2xl px-4 sm:px-10">
+      <div className="text-center max-w-3xl px-4 sm:px-10">
         {/* Heading */}
 
         <div className="flex flex-row justify-center gap-4 items-center group">
@@ -44,32 +44,32 @@ export default function Hero() {
         {/* About Summary */}
         <p className="text-gray-600 text-lg leading-relaxed mb-8 tracking-widest md:text-xl ">
           Specializing in creating{" "}
-          <span className="text-black font-medium hover:underline">
+          <span className="text-black font-medium hover:underline hover:cursor-pointer">
             scalable web applications
           </span>{" "}
           with{" "}
-          <span className="text-black font-medium hover:underline">
+          <span className="text-black font-medium hover:underline hover:cursor-pointer">
             clean architecture
           </span>{" "}
           and{" "}
-          <span className="text-black font-medium hover:underline">
+          <span className="text-black font-medium hover:underline hover:cursor-pointer">
             responsive interfaces.
           </span>
           <p className="hidden md:block">
             Experienced in bridging{" "}
-            <span className="text-black font-medium hover:underline">
+            <span className="text-black font-medium hover:underline hover:cursor-pointer">
               multiple development paradigms
             </span>{" "}
             to deliver{" "}
-            <span className="text-black font-medium hover:underline">
+            <span className="text-black font-medium hover:underline hover:cursor-pointer">
               optimized solutions
             </span>{" "}
             that balance{" "}
-            <span className="text-black font-medium hover:underline">
+            <span className="text-black font-medium hover:underline hover:cursor-pointer">
               technical excellence
             </span>{" "}
             with{" "}
-            <span className="text-black font-medium hover:underline">
+            <span className="text-black font-medium hover:underline hover:cursor-pointer">
               exceptional user experience
             </span>
             .
@@ -103,7 +103,7 @@ export default function Hero() {
             <FaFacebook />
           </a>
           <a
-            href="https://instagram.com/yuvrajkarna27"
+            href="https://instagram.com/iamyuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 hover:text-gray-700 transition"

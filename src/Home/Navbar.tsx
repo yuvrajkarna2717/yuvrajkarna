@@ -8,6 +8,7 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
+    { name: "Open Source Contributions", to: "#opensource" },
   ];
 
   return (
@@ -34,7 +35,6 @@ export default function Navbar() {
         <button
           className="md:hidden text-2xl z-50"
           onClick={() => {
-            console.log("clicked");
             setIsOpen(!isOpen);
           }}
         >
