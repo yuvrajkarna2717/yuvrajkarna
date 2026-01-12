@@ -4,6 +4,7 @@ import {
   FaFacebook,
   FaInstagram,
   FaTwitter,
+  FaEnvelope,
 } from "react-icons/fa";
 import { BsArrowDown } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -15,7 +16,7 @@ export default function Hero() {
       <div className="text-center max-w-3xl px-4 sm:px-10">
         {/* Heading */}
 
-        <div className="flex flex-row justify-center gap-4 items-center group">
+        <div className="flex flex-row justify-center gap-4 items-center group mt-10">
           <p className="md:text-5xl sm:text-2xl text-2xl text-gray-600 font-light mb-4">
             Hi, I'm{" "}
             <a
@@ -38,46 +39,20 @@ export default function Hero() {
         </div>
 
         <p className="md:text-3xl sm:text-2xl text-xl font-normal mb-6 tracking-widest">
-          Software Engineer • Full Stack Developer
+          Software Engineer 
         </p>
 
         {/* About Summary */}
         <p className="text-gray-600 text-lg leading-relaxed mb-8 tracking-widest md:text-xl ">
-          Specializing in creating{" "}
+          I build software that works{" "}
           <span className="text-black font-medium hover:underline hover:cursor-pointer">
-            scalable web applications
+            (most of the time)
           </span>{" "}
-          with{" "}
-          <span className="text-black font-medium hover:underline hover:cursor-pointer">
-            clean architecture
-          </span>{" "}
-          and{" "}
-          <span className="text-black font-medium hover:underline hover:cursor-pointer">
-            responsive interfaces.
-          </span>
-          <p className="hidden md:block">
-            Experienced in bridging{" "}
-            <span className="text-black font-medium hover:underline hover:cursor-pointer">
-              multiple development paradigms
-            </span>{" "}
-            to deliver{" "}
-            <span className="text-black font-medium hover:underline hover:cursor-pointer">
-              optimized solutions
-            </span>{" "}
-            that balance{" "}
-            <span className="text-black font-medium hover:underline hover:cursor-pointer">
-              technical excellence
-            </span>{" "}
-            with{" "}
-            <span className="text-black font-medium hover:underline hover:cursor-pointer">
-              exceptional user experience
-            </span>
-            .
-          </p>
+          — clean, scalable, and user-friendly.
         </p>
 
         {/* Social Links */}
-        <div className="flex justify-center gap-6 text-2xl text-black">
+        <div className="flex justify-center gap-6 text-2xl text-black mt-12">
           <a
             href="https://github.com/yuvrajkarna2717"
             target="_blank"
@@ -87,7 +62,7 @@ export default function Hero() {
             <FaGithub />
           </a>
           <a
-            href="https://www.linkedin.com/in/yuvrajkarna27"
+            href="https://www.linkedin.com/in/yuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 hover:text-gray-700 transition"
@@ -95,7 +70,7 @@ export default function Hero() {
             <FaLinkedin />
           </a>
           <a
-            href="https://facebook.com/share/1dtHplniqd"
+            href="https://www.facebook.com/iamyuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:scale-110 hover:text-gray-700 transition"
@@ -119,17 +94,39 @@ export default function Hero() {
             <FaTwitter />
           </a>
         </div>
-        <button className="bg-black text-white px-6 py-2 mt-10 rounded-full ">
-          <a
-            href="/resume/YuvrajKarna.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Resume
-          </a>
-        </button>
+        
+        {/* Contact Button */}
+        <div className="mt-12">
+          <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition flex items-center gap-2 mx-auto text-sm md:text-base">
+            <FaEnvelope className="flex-shrink-0" />
+            <a href="mailto:yuvrajkarna.code@gmail.com" className="break-all">
+              <span className="hidden sm:inline">yuvrajkarna.code@gmail.com</span>
+              <span className="sm:hidden">Contact Me</span>
+            </a>
+          </button>
+        </div>
+        
+        {/* Resume Button */}
+        <div className="mt-8">
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/story">
+              <button className="bg-gray-100 text-black px-6 py-2 rounded-full hover:bg-gray-200 transition border-2 border-gray-300">
+                My Story
+              </button>
+            </Link>
+            <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition">
+              <a
+                href="/resume/YuvrajKarna.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Resume
+              </a>
+            </button>
+          </div>
+        </div>
 
-        <div className="flex items-center justify-center sm:mt-5 lg:mt-10 mt-4">
+        <div className="flex items-center justify-center sm:mt-5 md:mt-20 mt-4">
           <button className="flex flex-col justify-center items-center gap-3">
             <Link to="/about" className="text-black text-md hover:underline">
               See more about me
