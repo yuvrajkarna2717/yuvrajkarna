@@ -1,285 +1,426 @@
-import { useState } from "react";
-import { FaGithub, FaCode, FaExternalLinkAlt } from "react-icons/fa";
-import { SiLeetcode, SiGeeksforgeeks } from "react-icons/si";
+import { useState, useEffect } from "react";
+import {
+  Github,
+  Code,
+  ExternalLink,
+  Rocket,
+  Lightbulb,
+  Mountain,
+  Trophy,
+  Coffee,
+  Bug,
+} from "lucide-react";
 
 export default function Story() {
-  const [activeChapter, setActiveChapter] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+    const handleScroll = () => {
+      const totalHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (window.scrollY / totalHeight) * 100;
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const chapters = [
     {
-      title: "The Beginning",
-      subtitle: "Where it all started",
+      title: "The Spark",
+      subtitle: "Where curiosity ignited",
+      story:
+        "It was a quiet evening when I stumbled upon my first line of code. The glow of the screen reflected in my eyes as I typed 'Hello World' - three simple characters that would become the first step of an incredible journey.",
       content:
-        "Every great story has a beginning. Mine started with curiosity about how websites work and a simple 'Hello World' that changed everything.",
-      icon: <FaCode className="w-8 h-8" />,
+        "What started as curiosity quickly became obsession. I spent nights exploring how websites worked, dismantling them in developer tools, and rebuilding them piece by piece. Every tutorial completed felt like unlocking a new superpower.",
+      icon: <Lightbulb className="w-10 h-10" />,
+      milestone: "First Hello World",
+      year: "The Beginning",
+      achievement: "Discovered the magic of programming",
     },
     {
       title: "The Grind",
-      subtitle: "LeetCode & Problem Solving",
+      subtitle: "Building the foundation",
+      story:
+        "They say mastery requires 10,000 hours. I started my clock with LeetCode problem #1. Easy at first, then increasingly impossible. Each failed submission taught me more than any success could.",
       content:
-        "Countless hours solving algorithms, debugging edge cases, and building that problem-solving muscle one challenge at a time.",
-      icon: <SiLeetcode className="w-8 h-8" />,
+        "Dawn after dawn, I sat with algorithms that seemed insurmountable. Two-pointer techniques, dynamic programming, graph traversals - each concept was a mountain to climb. But slowly, patterns emerged. My brain began thinking in loops and recursion.",
+      icon: <Mountain className="w-10 h-10" />,
+      milestone: "1000+ Problems",
+      year: "The Struggle",
+      achievement: "Transformed frustration into expertise",
+      platform: "leetcode",
     },
     {
-      title: "The Learning",
-      subtitle: "GeeksforGeeks Journey",
+      title: "The Deep Dive",
+      subtitle: "Understanding the 'why'",
+      story:
+        "Solving problems wasn't enough. I needed to understand the theory, the computer science that powered everything. GeeksforGeeks became my digital library.",
       content:
-        "Deep diving into computer science fundamentals, data structures, and system design concepts that shaped my engineering mindset.",
-      icon: <SiGeeksforgeeks className="w-8 h-8" />,
+        "From time complexity analysis to system design principles, I devoured articles and tutorials. Data structures came alive - trees weren't just diagrams, they were elegant solutions to real problems. Algorithms had stories, histories, inventors.",
+      icon: <Code className="w-10 h-10" />,
+      milestone: "Deep CS Knowledge",
+      year: "The Foundation",
+      achievement: "Mastered fundamentals that last forever",
+      platform: "geeksforgeeks",
     },
     {
-      title: "The Commitment",
-      subtitle: "GitHub Contributions",
+      title: "The Builder",
+      subtitle: "Creating real impact",
+      story:
+        "Knowledge without application is just trivia. It was time to build. GitHub became my canvas, and code became my art.",
       content:
-        "A year of consistent coding, building projects, and contributing to the open-source community. Every green square tells a story.",
-      icon: <FaGithub className="w-8 h-8" />,
+        "One commit led to another. Projects grew from ideas scribbled on napkins to deployed applications touching real users. Open source taught me collaboration. Every pull request was a conversation. Every issue was a lesson in empathy.",
+      icon: <Github className="w-10 h-10" />,
+      milestone: "1000+ Contributions",
+      year: "The Creation",
+      achievement: "Built solutions that matter",
+      platform: "github",
+    },
+    {
+      title: "The Journey Continues",
+      subtitle: "Always growing, always learning",
+      story:
+        "This isn't an ending - it's a checkpoint. Every skill mastered reveals ten more to learn. Every project completed sparks ideas for the next.",
+      content:
+        "The developer I am today would amaze the person who wrote that first Hello World. But the best part? I'm still that same curious person, still asking 'how does this work?', still excited by every new challenge.",
+      icon: <Rocket className="w-10 h-10" />,
+      milestone: "Next Chapter",
+      year: "The Future",
+      achievement: "Ready for whatever comes next",
     },
   ];
 
   const stats = [
     {
-      label: "Problems Solved",
+      label: "Problems Conquered",
       value: "1000+",
-      platform: "leetcode/geeksforgeeks",
+      platform: "LeetCode & GFG",
+      icon: <Code className="w-6 h-6" />,
     },
-    { label: "Contributions", value: "1000+", platform: "github" },
+    {
+      label: "Green Squares",
+      value: "1000+",
+      platform: "GitHub",
+      icon: <Github className="w-6 h-6" />,
+    },
+    {
+      label: "Coffee Consumed",
+      value: "∞",
+      platform: "Fuel for Code",
+      icon: <Coffee className="w-6 h-6" />,
+    },
+    {
+      label: "Bugs Squashed",
+      value: "Too Many",
+      platform: "Battle Scars",
+      icon: <Bug className="w-6 h-6" />,
+    },
   ];
 
   return (
-    <main className="relative min-h-screen w-full bg-white text-black font-sans">
-      {/* Background Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] z-0 pointer-events-none" />
+    <div className="min-h-screen text-white relative">
+      {/* Background Grid Pattern */}
+      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] z-0 pointer-events-none" />
+
+      {/* Progress Bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-800 z-50">
+        <div
+          className="h-full bg-white transition-all duration-300"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-20 pb-16 px-4 sm:px-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+      <div
+        className={`relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+      >
+        <div className="text-center space-y-6 max-w-4xl">
+          <div className="inline-block">
+            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm px-6 py-2 rounded-full border border-white/20">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+              <span className="text-sm font-mono">Status: Always Learning</span>
+            </div>
+          </div>
+
+          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black text-white leading-tight">
             My Coding
-            <span className="block text-gray-600">Story</span>
+            <br />
+            Odyssey
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            A journey through algorithms, projects, and countless lines of code
-            that shaped me into the developer I am today.
+
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            A tale of late nights, countless bugs, breakthrough moments, and the
+            relentless pursuit of mastery. This is my journey from curious
+            beginner to passionate developer.
           </p>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-6 mb-16">
+          <div className="flex flex-wrap gap-4 justify-center pt-6">
+            <a
+              href="#story"
+              className="px-8 py-3 bg-white text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg"
+            >
+              Start Reading
+            </a>
+            <a
+              href="#contact"
+              className="px-8 py-3 bg-white/10 backdrop-blur-sm rounded-full font-semibold hover:bg-white/20 transition-all border border-white/20"
+            >
+              Skip to End
+            </a>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-10 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
+            <div className="w-1 h-3 bg-white/50 rounded-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Section */}
+      <div id="stats" className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-white">
+            Journey By Numbers
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors"
+                className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all hover:scale-105"
               >
-                <div className="text-2xl md:text-3xl font-bold text-black mb-2">
+                <div className="text-white mb-3">{stat.icon}</div>
+                <div className="text-4xl sm:text-5xl font-black text-white mb-2">
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-600 mb-1">{stat.label}</div>
-                <div className="text-xs text-gray-500">{stat.platform}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Chapter Navigation */}
-      <section className="relative z-10 px-4 sm:px-10 mb-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {chapters.map((chapter, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveChapter(index)}
-                className={`flex items-center gap-3 px-6 py-4 rounded-xl transition-all duration-300 ${
-                  activeChapter === index
-                    ? "bg-black text-white shadow-lg"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {chapter.icon}
-                <div className="text-left">
-                  <div className="font-semibold">{chapter.title}</div>
-                  <div className="text-sm opacity-75">{chapter.subtitle}</div>
+                <div className="text-lg font-semibold text-gray-300 mb-1">
+                  {stat.label}
                 </div>
-              </button>
+                <div className="text-sm text-gray-500 font-mono">
+                  {stat.platform}
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Active Chapter Content */}
-      <section className="relative z-10 px-4 sm:px-10 mb-20">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="text-black">{chapters[activeChapter].icon}</div>
-              <div>
-                <h2 className="text-3xl font-bold text-black">
-                  {chapters[activeChapter].title}
-                </h2>
-                <p className="text-gray-600">
-                  {chapters[activeChapter].subtitle}
-                </p>
-              </div>
+      {/* Horizontal Timeline Story */}
+      <div id="story" className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6 text-white">
+            The Story Unfolds
+          </h2>
+          <p className="text-center text-gray-400 mb-16 max-w-2xl mx-auto">
+            Scroll through the chapters of my journey. Each step was a lesson,
+            each challenge was growth.
+          </p>
+
+          {/* Horizontal Timeline Path */}
+          <div className="relative mb-20">
+            <div className="hidden lg:block absolute top-20 left-0 right-0 h-1 bg-white/20" />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-4">
+              {chapters.map((chapter, index) => (
+                <div key={index} className="relative">
+                  <div className="hidden lg:block absolute top-20 left-1/2 w-6 h-6 bg-white rounded-full border-4 border-gray-800 transform -translate-x-1/2 -translate-y-1/2 z-10" />
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4 border border-white/20">
+                      {chapter.icon}
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-1">
+                      {chapter.title}
+                    </h3>
+                    <p className="text-sm text-gray-400 mb-2">
+                      {chapter.subtitle}
+                    </p>
+                    <span className="text-xs font-mono text-gray-500">
+                      {chapter.year}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
-            <p className="text-lg text-gray-700 leading-relaxed mb-8">
-              {chapters[activeChapter].content}
-            </p>
+          </div>
 
-            {/* Chapter-specific content */}
-            {activeChapter === 1 && (
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <SiLeetcode className="text-orange-500" />
-                    LeetCode Journey
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    My problem-solving journey on LeetCode has been
-                    transformative. From struggling with basic array problems to
-                    solving complex dynamic programming challenges.
-                  </p>
-                  <div className="bg-white rounded-lg p-4 mb-4">
-                    <div className="text-center text-gray-500 text-sm mb-2">
-                      LeetCode Profile
+          {/* Story Sections */}
+          <div className="space-y-32">
+            {chapters.map((chapter, index) => (
+              <div key={index} className="relative">
+                <div
+                  className={`max-w-4xl mx-auto ${index % 2 === 0 ? "" : "lg:ml-auto"}`}
+                >
+                  <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 sm:p-12 border border-white/10 shadow-2xl">
+                    <div className="flex items-start gap-6 mb-6">
+                      <div className="flex-shrink-0 w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
+                        {chapter.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm text-gray-400 font-mono mb-1">
+                          Chapter {index + 1} • {chapter.year}
+                        </div>
+                        <h3 className="text-3xl sm:text-4xl font-black text-white mb-2">
+                          {chapter.title}
+                        </h3>
+                        <p className="text-gray-400 text-lg">
+                          {chapter.subtitle}
+                        </p>
+                      </div>
                     </div>
-                    <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <img
-                        className="max-w-full max-h-full object-contain rounded-lg"
-                        src="/leetcode.png"
-                        alt="LeetCode Profile"
-                      />
+
+                    <div className="space-y-6 text-gray-300 leading-relaxed">
+                      <p className="text-xl sm:text-2xl font-light italic border-l-4 border-white pl-6">
+                        "{chapter.story}"
+                      </p>
+                      <p className="text-lg">{chapter.content}</p>
                     </div>
+
+                    <div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Trophy className="w-5 h-5 text-white" />
+                        <span className="text-sm font-mono text-gray-400">
+                          Achievement Unlocked
+                        </span>
+                      </div>
+                      <div className="text-xl font-bold text-white">
+                        {chapter.achievement}
+                      </div>
+                      <div className="text-gray-400 font-mono mt-1">
+                        {chapter.milestone}
+                      </div>
+                    </div>
+
+                    {/* Platform-specific content */}
+                    {chapter.platform === "leetcode" && (
+                      <div className="mt-8">
+                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                          <h4 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white">
+                            <Mountain className="w-6 h-6" />
+                            LeetCode Journey
+                          </h4>
+                          <p className="text-gray-300 mb-4">
+                            From Easy to Hard, from brute force to optimal
+                            solutions. Each problem solved was a battle won,
+                            each concept mastered was a level gained.
+                          </p>
+                          <a
+                            href="#"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            View LeetCode Profile
+                          </a>
+                        </div>
+                      </div>
+                    )}
+
+                    {chapter.platform === "geeksforgeeks" && (
+                      <div className="mt-8">
+                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                          <h4 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white">
+                            <Code className="w-6 h-6" />
+                            GeeksforGeeks Learning Path
+                          </h4>
+                          <p className="text-gray-300 mb-4">
+                            My university of computer science. Every article
+                            read, every concept absorbed, built the foundation
+                            that everything else stands on.
+                          </p>
+                          <a
+                            href="#"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            View GFG Profile
+                          </a>
+                        </div>
+                      </div>
+                    )}
+
+                    {chapter.platform === "github" && (
+                      <div className="mt-8">
+                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                          <h4 className="text-2xl font-bold mb-3 flex items-center gap-2 text-white">
+                            <Github className="w-6 h-6" />
+                            GitHub Contributions
+                          </h4>
+                          <p className="text-gray-300 mb-4">
+                            Every green square tells a story. A bug fixed at 2
+                            AM. A feature shipped on a Saturday. A contribution
+                            that helped someone across the world.
+                          </p>
+                          <div className="flex flex-wrap gap-3">
+                            <a
+                              href="#"
+                              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
+                            >
+                              <Github className="w-4 h-4" />
+                              View Profile
+                            </a>
+                            <a
+                              href="#"
+                              className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all border border-white/20"
+                            >
+                              <Code className="w-4 h-4" />
+                              Browse Projects
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <a
-                    href="https://leetcode.com/yuvrajkarna27"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
-                  >
-                    <FaExternalLinkAlt />
-                    View My LeetCode Profile
-                  </a>
                 </div>
               </div>
-            )}
-
-            {activeChapter === 2 && (
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <SiGeeksforgeeks className="text-green-600" />
-                    GeeksforGeeks Learning
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    GeeksforGeeks has been my go-to resource for understanding
-                    computer science fundamentals, algorithms, and system design
-                    concepts.
-                  </p>
-                  <div className="bg-white rounded-lg p-4 mb-4">
-                    <div className="text-center text-gray-500 text-sm mb-2">
-                      GeeksforGeeks Profile
-                    </div>
-                    <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <img
-                        className="max-w-full max-h-full object-contain rounded-lg"
-                        src="/gfg.png"
-                        alt="GeeksforGeeks Profile"
-                      />
-                    </div>
-                  </div>
-                  <a
-                    href="https://www.geeksforgeeks.org/profile/yuvrajkarna27"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-                  >
-                    <FaExternalLinkAlt />
-                    View My GeeksforGeeks Profile
-                  </a>
-                </div>
-              </div>
-            )}
-
-            {activeChapter === 3 && (
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <FaGithub />
-                    GitHub Contributions Heatmap
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    A visual representation of my coding consistency over the
-                    past year. Each green square represents commits,
-                    contributions, and progress.
-                  </p>
-                  <div className="bg-white rounded-lg p-4 mb-4">
-                    <div className="text-center text-gray-500 text-sm mb-2">
-                      GitHub Contributions Heatmap
-                    </div>
-                    <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <img
-                        className="max-w-full max-h-full object-contain rounded-lg"
-                        src="/github.png"
-                        alt="GitHub Contributions Heatmap"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-4">
-                    <a
-                      href="https://github.com/yuvrajkarna2717"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
-                    >
-                      <FaGithub />
-                      View My GitHub Profile
-                    </a>
-                    <a
-                      href="https://github.com/yuvrajkarna2717?tab=repositories"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 border-2 border-black text-black px-4 py-2 rounded-lg hover:bg-black hover:text-white transition-colors"
-                    >
-                      <FaCode />
-                      View My Repositories
-                    </a>
-                  </div>
-                </div>
-              </div>
-            )}
+            ))}
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Call to Action */}
-      <section className="relative z-10 px-4 sm:px-10 pb-20">
+      <div id="contact" className="relative py-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-black text-white rounded-2xl p-8 md:p-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Want to be part of my story?
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-12 sm:p-16 border border-white/10 shadow-2xl">
+            <Rocket className="w-16 h-16 mx-auto mb-6 text-white" />
+            <h2 className="text-4xl sm:text-5xl font-black mb-6 text-white">
+              Let's Write the Next Chapter Together
             </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              Let's build something amazing together. I'm always excited about
-              new opportunities and collaborations.
+            <p className="text-xl text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+              Every great story needs collaboration. Whether you're building
+              something revolutionary, solving hard problems, or just want to
+              talk code - I'm ready for the next adventure.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap gap-4 justify-center">
               <a
-                href="mailto:yuvrajkarna.code@gmail.com"
-                className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                href="#"
+                className="px-10 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl"
               >
-                Get In Touch
+                Start a Conversation
               </a>
               <a
-                href="/resume/YuvrajKarna.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-black transition-colors"
+                href="#"
+                className="px-10 py-4 bg-white/10 backdrop-blur-sm rounded-full font-bold text-lg hover:bg-white/20 transition-all border border-white/20"
               >
-                View Resume
+                View My Resume
               </a>
             </div>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+
+      {/* Footer */}
+      <div className="relative py-12 px-4 sm:px-6 lg:px-8 border-t border-white/10">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-400 mb-4">
+            Built with curiosity, powered by passion, fueled by coffee ☕
+          </p>
+          <p className="text-gray-600 text-sm font-mono">
+            This story is still being written... Stay tuned for more chapters.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
