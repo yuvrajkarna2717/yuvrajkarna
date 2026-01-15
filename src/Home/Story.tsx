@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Github,
   Code,
@@ -10,10 +11,22 @@ import {
   Coffee,
   Bug,
 } from "lucide-react";
+import { FaBackward } from "react-icons/fa6";
 
 export default function Story() {
+  const navigate = useNavigate();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Links object
+  const links = {
+    leetcode: "https://leetcode.com/u/yuvrajkarna27",
+    geeksforgeeks: "https://auth.geeksforgeeks.org/user/yuvrajkarna27",
+    github: "https://github.com/yuvrajkarna2717",
+    githubProjects: "https://github.com/yuvrajkarna2717?tab=repositories",
+    contact: "mailto:yuvrajkarna.code@gmail.com",
+    resume: "/resume/YuvrajKarna.pdf",
+  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -133,6 +146,17 @@ export default function Story() {
         />
       </div>
 
+      {/* Back Button */}
+      <div className="fixed top-6 left-6 z-50">
+        <button
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full font-semibold hover:bg-white/20 transition-all border border-white/20 hover:scale-105"
+          onClick={() => navigate("/")}
+        >
+          <FaBackward className="w-4 h-4" />
+          <span>Back</span>
+        </button>
+      </div>
+
       {/* Hero Section */}
       <div
         className={`relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
@@ -231,7 +255,7 @@ export default function Story() {
                     <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4 border border-white/20">
                       {chapter.icon}
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-1">
+                    <h3 className="text-xl font-bold text-white mb-1 mt-2">
                       {chapter.title}
                     </h3>
                     <p className="text-sm text-gray-400 mb-2">
@@ -251,7 +275,7 @@ export default function Story() {
             {chapters.map((chapter, index) => (
               <div key={index} className="relative">
                 <div
-                  className={`max-w-4xl mx-auto ${index % 2 === 0 ? "" : "lg:ml-auto"}`}
+                  className={`max-w-4xl mx-auto \${index % 2 === 0 ? "" : "lg:ml-auto"}`}
                 >
                   <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 sm:p-12 border border-white/10 shadow-2xl">
                     <div className="flex items-start gap-6 mb-6">
@@ -307,7 +331,9 @@ export default function Story() {
                             each concept mastered was a level gained.
                           </p>
                           <a
-                            href="#"
+                            href={links.leetcode}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -330,7 +356,9 @@ export default function Story() {
                             that everything else stands on.
                           </p>
                           <a
-                            href="#"
+                            href={links.geeksforgeeks}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -354,14 +382,18 @@ export default function Story() {
                           </p>
                           <div className="flex flex-wrap gap-3">
                             <a
-                              href="#"
+                              href={links.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
                             >
                               <Github className="w-4 h-4" />
                               View Profile
                             </a>
                             <a
-                              href="#"
+                              href={links.githubProjects}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full font-semibold transition-all border border-white/20"
                             >
                               <Code className="w-4 h-4" />
@@ -394,13 +426,15 @@ export default function Story() {
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <a
-                href="#"
+                href={links.contact}
                 className="px-10 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl"
               >
                 Start a Conversation
               </a>
               <a
-                href="#"
+                href={links.resume}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-10 py-4 bg-white/10 backdrop-blur-sm rounded-full font-bold text-lg hover:bg-white/20 transition-all border border-white/20"
               >
                 View My Resume

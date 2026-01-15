@@ -8,7 +8,7 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
-    { name: "Story", to: "/story" },
+    { name: "My Story", to: "/story" },
     { name: "Open Source Contributions", to: "#opensource" },
   ];
 
