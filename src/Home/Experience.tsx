@@ -48,191 +48,6 @@ const icons = {
   ),
 };
 
-const ProductCard: React.FC<{ product: Product; index: number }> = ({
-  product,
-  index,
-}) => {
-  const [expanded, setExpanded] = useState(false);
-
-  const getIconByTech = (tech: string) => {
-    const lowerCaseTech = tech.toLowerCase();
-    if (lowerCaseTech.includes("react")) return icons.react;
-    if (lowerCaseTech.includes("node")) return icons.nodejs;
-    if (lowerCaseTech.includes("mongo")) return icons.mongodb;
-    if (lowerCaseTech.includes("openai")) return icons.openai;
-    return null;
-  };
-
-  return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 w-full border border-gray-200 hover:border-gray-900 transform hover:-translate-y-1">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center text-sm font-bold">
-            {index + 1}
-          </div>
-          <h4 className="text-xl font-bold text-gray-900">{product.name}</h4>
-        </div>
-        <div className="flex gap-2 items-center">
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
-            📅 {product.duration}
-          </span>
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-medium ${
-              product?.status === "completed"
-                ? "bg-green-100 text-green-800"
-                : "bg-blue-100 text-blue-800"
-            }`}
-          >
-            {product.status === "completed" ? "✅ Live" : "🚧 Development"}
-          </span>
-          {product.users && (
-            <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
-              👥 {product.users}
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <span className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium shadow-md">
-          {product.role}
-        </span>
-      </div>
-
-      <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-        {product.description}
-      </p>
-
-      <div className="flex flex-wrap gap-2 mb-4">
-        {product.techStack.map((tech, idx) => (
-          <div
-            key={idx}
-            className="flex items-center bg-gray-50 px-2 py-1 rounded-md"
-          >
-            {getIconByTech(tech) && (
-              <div className="w-3 h-3 mr-1 text-gray-700">
-                {getIconByTech(tech)}
-              </div>
-            )}
-            <span className="text-xs font-medium text-gray-700">{tech}</span>
-          </div>
-        ))}
-      </div>
-
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="text-sm font-medium text-gray-900 hover:text-gray-700 flex items-center mb-4 transition-colors bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg"
-      >
-        {expanded ? "Hide details" : "Show details"}
-        <svg
-          className={`ml-1 w-3 h-3 transition-transform ${expanded ? "rotate-180" : ""}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-
-      {expanded && (
-        <div className="space-y-2 text-gray-600 text-xs mb-4 pl-3 border-l-2 border-blue-200">
-          {product.highlights.map((highlight, idx) => (
-            <p key={idx}>{highlight}</p>
-          ))}
-        </div>
-      )}
-
-      {product.link && (
-        <a
-          href={product.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center px-3 py-2 bg-gray-900 rounded-md text-xs font-medium text-white hover:bg-gray-700 transition-colors"
-        >
-          <div className="w-3 h-3 mr-1">{icons.link}</div>
-          View Product
-        </a>
-      )}
-    </div>
-  );
-};
-
-const ExperienceCard: React.FC<{ experience: Experience }> = ({
-  experience,
-}) => {
-  return (
-    <div className="relative">
-      {/* Company Header with gradient background */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-8 mb-8 shadow-xl">
-        <div className="flex items-center justify-between">
-          <div className="text-white">
-            <h3 className="text-3xl font-bold mb-2">{experience.company}</h3>
-            <p className="text-gray-200 text-lg">{experience.position}</p>
-          </div>
-          <div className="text-right">
-            <span className="px-6 py-3 bg-white text-gray-900 rounded-xl text-sm font-bold shadow-lg">
-              {experience.duration}
-            </span>
-            <div className="text-white text-sm mt-2 opacity-80">
-              {experience.products.length} Products
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Products Timeline */}
-      <div className="relative pl-8">
-        {/* Vertical Timeline Line */}
-        <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300"></div>
-
-        <div className="space-y-8">
-          {experience.products.map((product, index) => (
-            <div key={index} className="relative">
-              {/* Timeline Dot */}
-              <div className="absolute -left-6 top-6 w-4 h-4 bg-gray-900 rounded-full border-4 border-white shadow-lg z-10"></div>
-
-              {/* Product Card */}
-              <div className="ml-4">
-                <ProductCard product={product} index={index} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default function Experience() {
-  return (
-    <section id="experience" className="py-20 bg-white">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <blockquote className="text-3xl md:text-4xl italic text-gray-800 font-light mb-4">
-            "The only source of knowledge is experience."
-          </blockquote>
-          <cite className="block text-gray-500 text-sm mb-8">
-            — Albert Einstein
-          </cite>
-
-          <AnimationTitle title="Professional Experience" />
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
-            My professional journey building innovative products and solutions
-          </p>
-        </div>
-
-        <div>
-          {experiences.map((experience, index) => (
-            <ExperienceCard key={index} experience={experience} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 const experiences: Experience[] = [
   {
@@ -301,3 +116,190 @@ const experiences: Experience[] = [
     ],
   },
 ];
+
+
+const ProductCard: React.FC<{ product: Product; index: number }> = ({
+  product,
+  index,
+}) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const getIconByTech = (tech: string) => {
+    const lowerCaseTech = tech.toLowerCase();
+    if (lowerCaseTech.includes("react")) return icons.react;
+    if (lowerCaseTech.includes("node")) return icons.nodejs;
+    if (lowerCaseTech.includes("mongo")) return icons.mongodb;
+    if (lowerCaseTech.includes("openai")) return icons.openai;
+    return null;
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 w-full border border-gray-200 hover:border-gray-900 transform hover:-translate-y-1">
+      <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-4 gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0">
+            {index + 1}
+          </div>
+          <h4 className="text-lg sm:text-xl font-bold text-gray-900">{product.name}</h4>
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap">
+            📅 {product.duration}
+          </span>
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
+              product?.status === "completed"
+                ? "bg-green-100 text-green-800"
+                : "bg-blue-100 text-blue-800"
+            }`}
+          >
+            {product.status === "completed" ? "✅ Live" : "🚧 Development"}
+          </span>
+          {product.users && (
+            <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium whitespace-nowrap">
+              👥 {product.users}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-900 text-white rounded-lg text-xs sm:text-sm font-medium shadow-md">
+          {product.role}
+        </span>
+      </div>
+
+      <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+        {product.description}
+      </p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {product.techStack.map((tech, idx) => (
+          <div
+            key={idx}
+            className="flex items-center bg-gray-50 px-2 py-1 rounded-md"
+          >
+            {getIconByTech(tech) && (
+              <div className="w-3 h-3 mr-1 text-gray-700 flex-shrink-0">
+                {getIconByTech(tech)}
+              </div>
+            )}
+            <span className="text-xs font-medium text-gray-700">{tech}</span>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-xs sm:text-sm font-medium text-gray-900 hover:text-gray-700 flex items-center mb-4 transition-colors bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg"
+      >
+        {expanded ? "Hide details" : "Show details"}
+        <svg
+          className={`ml-1 w-3 h-3 transition-transform ${expanded ? "rotate-180" : ""}`}
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+
+      {expanded && (
+        <div className="space-y-2 text-gray-600 text-xs mb-4 pl-3 border-l-2 border-blue-200">
+          {product.highlights.map((highlight, idx) => (
+            <p key={idx}>{highlight}</p>
+          ))}
+        </div>
+      )}
+
+      {product.link && (
+        <a
+          href={product.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-3 py-2 bg-gray-900 rounded-md text-xs font-medium text-white hover:bg-gray-700 transition-colors"
+        >
+          <div className="w-3 h-3 mr-1 flex-shrink-0">{icons.link}</div>
+          View Product
+        </a>
+      )}
+    </div>
+  );
+};
+
+const ExperienceCard: React.FC<{ experience: Experience }> = ({
+  experience,
+}) => {
+  return (
+    <div className="relative">
+      {/* Company Header with gradient background */}
+      <div className="bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-4 sm:p-6 md:p-8 mb-8 shadow-xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="text-white">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-2">{experience.company}</h3>
+            <p className="text-gray-200 text-base sm:text-lg">{experience.position}</p>
+          </div>
+          <div className="text-left sm:text-right">
+            <span className="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-white text-gray-900 rounded-xl text-xs sm:text-sm font-bold shadow-lg">
+              {experience.duration}
+            </span>
+            <div className="text-white text-xs sm:text-sm mt-2 opacity-80">
+              {experience.products.length} Products
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Products Timeline */}
+      <div className="relative pl-6 sm:pl-8">
+        {/* Vertical Timeline Line */}
+        <div className="absolute left-3 sm:left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300"></div>
+
+        <div className="space-y-6 sm:space-y-8">
+          {experience.products.map((product, index) => (
+            <div key={index} className="relative">
+              {/* Timeline Dot */}
+              <div className="absolute -left-[1.375rem] sm:-left-6 top-4 sm:top-6 w-3 h-3 sm:w-4 sm:h-4 bg-gray-900 rounded-full border-2 sm:border-4 border-white shadow-lg z-10"></div>
+
+              {/* Product Card */}
+              <div className="ml-2 sm:ml-4">
+                <ProductCard product={product} index={index} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function Experience() {
+  return (
+    <section id="experience" className="py-20 bg-white">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <blockquote className="text-3xl md:text-4xl italic text-gray-800 font-light mb-4">
+            "The only source of knowledge is experience."
+          </blockquote>
+          <cite className="block text-gray-500 text-sm mb-8">
+            — Albert Einstein
+          </cite>
+
+          <AnimationTitle title="Professional Experience" />
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+            My professional journey building innovative products and solutions
+          </p>
+        </div>
+
+        <div>
+          {experiences.map((experience, index) => (
+            <ExperienceCard key={index} experience={experience} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
