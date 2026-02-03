@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yuvraj-karna.vercel.app/sitemap.xml
+Sitemap: https://yuvrajkarna.pages.dev/sitemap.xml
