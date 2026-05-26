@@ -12,12 +12,12 @@ import { SiHappycow } from "react-icons/si";
 
 export default function Hero() {
   return (
-    <section className="flex items-center justify-center text-black md:mt-14 mt-10">
+    <section className="flex items-center justify-center text-black dark:text-white md:mt-14 mt-10">
       <div className="text-center max-w-3xl px-4 sm:px-10">
         {/* Heading */}
 
         <div className="flex flex-row justify-center gap-4 items-center group mt-10">
-          <p className="md:text-5xl sm:text-2xl text-2xl text-gray-600 font-light mb-4">
+          <p className="md:text-5xl sm:text-2xl text-2xl text-gray-600 dark:text-gray-400 font-light mb-4">
             Hi, I'm{" "}
             <a
               href="https://www.linkedin.com/in/yuvrajkarna27"
@@ -25,9 +25,11 @@ export default function Hero() {
               rel="noopener noreferrer"
               className="relative inline-block cursor-pointer"
             >
-              <span className="text-black font-semibold">Yuvraj Karna</span>
+              <span className="text-black dark:text-white font-semibold">
+                Yuvraj Karna
+              </span>
               {/* underline effect on hover */}
-              <span className="absolute left-0 -bottom-1 w-full h-1 bg-black scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+              <span className="absolute left-0 -bottom-1 w-full h-1 bg-black dark:bg-white scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
             </a>
           </p>
 
@@ -39,25 +41,25 @@ export default function Hero() {
         </div>
 
         <p className="md:text-3xl sm:text-2xl text-xl font-normal mb-6 tracking-widest">
-          Software Engineer 
+          Software Engineer
         </p>
 
         {/* About Summary */}
-        <p className="text-gray-600 text-lg leading-relaxed mb-8 tracking-widest md:text-xl ">
+        <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-8 tracking-widest md:text-xl ">
           I build software that works{" "}
-          <span className="text-black font-medium hover:underline hover:cursor-pointer">
+          <span className="text-black dark:text-white font-medium hover:underline hover:cursor-pointer">
             (most of the time)
           </span>{" "}
           — clean, scalable, and user-friendly.
         </p>
 
         {/* Social Links */}
-        <div className="flex justify-center gap-6 text-2xl text-black mt-12">
+        <div className="flex justify-center gap-6 text-2xl text-black dark:text-white mt-12">
           <a
             href="https://github.com/yuvrajkarna2717"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:scale-110 hover:text-gray-700 transition"
+            className="hover:scale-110 hover:text-gray-700 dark:hover:text-gray-300 transition"
           >
             <FaGithub />
           </a>
@@ -65,7 +67,7 @@ export default function Hero() {
             href="https://www.linkedin.com/in/yuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:scale-110 hover:text-gray-700 transition"
+            className="hover:scale-110 hover:text-gray-700 dark:hover:text-gray-300 transition"
           >
             <FaLinkedin />
           </a>
@@ -73,7 +75,7 @@ export default function Hero() {
             href="https://www.facebook.com/iamyuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:scale-110 hover:text-gray-700 transition"
+            className="hover:scale-110 hover:text-gray-700 dark:hover:text-gray-300 transition"
           >
             <FaFacebook />
           </a>
@@ -81,7 +83,7 @@ export default function Hero() {
             href="https://instagram.com/iamyuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:scale-110 hover:text-gray-700 transition"
+            className="hover:scale-110 hover:text-gray-700 dark:hover:text-gray-300 transition"
           >
             <FaInstagram />
           </a>
@@ -89,32 +91,34 @@ export default function Hero() {
             href="https://x.com/yuvrajkarna"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:scale-110 hover:text-gray-700 transition"
+            className="hover:scale-110 hover:text-gray-700 dark:hover:text-gray-300 transition"
           >
             <FaTwitter />
           </a>
         </div>
-        
+
         {/* Contact Button */}
         <div className="mt-12">
-          <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition flex items-center gap-2 mx-auto text-sm md:text-base">
+          <button className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition flex items-center gap-2 mx-auto text-sm md:text-base">
             <FaEnvelope className="flex-shrink-0" />
             <a href="mailto:yuvrajkarna.code@gmail.com" className="break-all">
-              <span className="hidden sm:inline">yuvrajkarna.code@gmail.com</span>
+              <span className="hidden sm:inline">
+                yuvrajkarna.code@gmail.com
+              </span>
               <span className="sm:hidden">Contact Me</span>
             </a>
           </button>
         </div>
-        
+
         {/* Resume Button */}
         <div className="mt-8">
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/story">
-              <button className="bg-gray-100 text-black px-6 py-2 rounded-full hover:bg-gray-200 transition border-2 border-gray-300">
+              <button className="bg-gray-100 dark:bg-white/10 text-black dark:text-white px-6 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition border-2 border-gray-300 dark:border-white/20">
                 My Story
               </button>
             </Link>
-            <button className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition">
+            <button className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition">
               <a
                 href="/resume/YuvrajKarna.pdf"
                 target="_blank"
@@ -128,10 +132,13 @@ export default function Hero() {
 
         <div className="flex items-center justify-center sm:mt-5 md:mt-20 mt-4">
           <button className="flex flex-col justify-center items-center gap-3">
-            <Link to="/about" className="text-black text-md hover:underline">
+            <Link
+              to="/about"
+              className="text-black dark:text-white text-md hover:underline"
+            >
               See more about me
             </Link>
-            <div className="text-black text-3xl mt-1">
+            <div className="text-black dark:text-white text-3xl mt-1">
               <BsArrowDown className="animate-arrow-bounce" />
             </div>
           </button>

@@ -37,13 +37,18 @@ const skills: Skill[] = [
 const SkillsDisplay: React.FC = () => {
   const [showAll, setShowAll] = useState(false);
   const INITIAL_SKILLS_COUNT = 8;
-  
-  const displayedSkills = showAll ? skills : skills.slice(0, INITIAL_SKILLS_COUNT);
+
+  const displayedSkills = showAll
+    ? skills
+    : skills.slice(0, INITIAL_SKILLS_COUNT);
 
   // Skill item component with simple animations
-  const SkillItem: React.FC<{ skill: Skill; index: number }> = ({ skill, index }) => (
-    <div 
-      className="flex items-center bg-white rounded-full px-5 py-3 mx-2 my-2 shadow-md border border-gray-200 transition-all duration-300 hover:shadow-xl animate-float"
+  const SkillItem: React.FC<{ skill: Skill; index: number }> = ({
+    skill,
+    index,
+  }) => (
+    <div
+      className="flex items-center bg-white dark:bg-white/10 rounded-full px-5 py-3 mx-2 my-2 shadow-md border border-gray-200 dark:border-white/20 transition-all duration-300 hover:shadow-xl animate-float"
       style={{ animationDelay: `${index * 0.2}s` }}
     >
       <div className="w-6 h-6 mr-2">
@@ -51,8 +56,10 @@ const SkillsDisplay: React.FC = () => {
           <span className="text-xs font-bold">{skill.name.charAt(0)}</span>
         </div>
       </div>
-      <span className="font-medium text-sm text-gray-800">{skill.name}</span>
-      <div className="ml-2 w-2 h-2 rounded-full bg-black"></div>
+      <span className="font-medium text-sm text-gray-800 dark:text-white">
+        {skill.name}
+      </span>
+      <div className="ml-2 w-2 h-2 rounded-full bg-black dark:bg-white"></div>
     </div>
   );
 
@@ -75,10 +82,10 @@ const SkillsDisplay: React.FC = () => {
         }
       `}</style>
       <div className="max-w-5xl mx-auto px-6 mb-8">
-        <div className="text-3xl md:text-4xl font-bold text-center mb-2 text-black">
+        <div className="text-3xl md:text-4xl font-bold text-center mb-2 text-black dark:text-white">
           Skills & Technologies
         </div>
-        <div className="text-center text-gray-600 mb-8">
+        <div className="text-center text-gray-600 dark:text-gray-400 mb-8">
           Tools and technologies I've worked with
         </div>
       </div>
@@ -95,9 +102,11 @@ const SkillsDisplay: React.FC = () => {
         <div className="flex justify-center">
           <button
             onClick={() => setShowAll(!showAll)}
-            className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-200"
+            className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200"
           >
-            {showAll ? "View Less" : `View All (${skills.length - INITIAL_SKILLS_COUNT} more)`}
+            {showAll
+              ? "View Less"
+              : `View All (${skills.length - INITIAL_SKILLS_COUNT} more)`}
           </button>
         </div>
       </div>

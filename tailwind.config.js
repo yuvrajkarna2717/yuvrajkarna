@@ -2,9 +2,16 @@
 import typography from "@tailwindcss/typography";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: "class",
   plugins: [typography],
   theme: {
     extend: {
+      backgroundColor: {
+        // ─── Dark theme background ───────────────────────────────────────────
+        // Change this ONE value to update the dark background across the project
+        "dark-bg": "#1f2937", // gray-800
+        // ─────────────────────────────────────────────────────────────────────
+      },
       keyframes: {
         "arrow-bounce": {
           "0%, 100%": { transform: "translateY(0)" },

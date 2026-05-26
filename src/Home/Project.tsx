@@ -179,11 +179,11 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+      <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
         <div className="p-6 sm:p-8">
           <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-3">
             <div className="flex-1">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 {project.title}
               </h3>
               <div className="flex flex-wrap items-center gap-2">
@@ -207,7 +207,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
             </div>
           </div>
 
-          <p className="text-gray-600 text-sm sm:text-base mb-6 leading-relaxed line-clamp-3">
+          <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base mb-6 leading-relaxed line-clamp-3">
             {project.description}
           </p>
 
@@ -215,21 +215,21 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
             {project.techStack.slice(0, 4).map((tech, idx) => (
               <div
                 key={idx}
-                className="flex items-center bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+                className="flex items-center bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 px-3 py-2 rounded-lg transition-colors"
               >
                 {getIconByTech(tech) && (
-                  <div className="w-4 h-4 mr-2 text-gray-700 flex-shrink-0">
+                  <div className="w-4 h-4 mr-2 text-gray-700 dark:text-gray-300 flex-shrink-0">
                     {getIconByTech(tech)}
                   </div>
                 )}
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {tech}
                 </span>
               </div>
             ))}
             {project.techStack.length > 4 && (
-              <div className="flex items-center bg-gray-50 px-3 py-2 rounded-lg">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="flex items-center bg-gray-50 dark:bg-white/5 px-3 py-2 rounded-lg">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   +{project.techStack.length - 4} more
                 </span>
               </div>
@@ -238,7 +238,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
 
           <button
             onClick={() => setShowModal(true)}
-            className="text-sm font-medium text-blue-600 hover:text-blue-800 flex items-center mb-4 transition-colors"
+            className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4 transition-colors"
           >
             View details
             <svg
@@ -260,7 +260,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 border-2 border-gray-900 rounded-lg text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-200"
+                className="inline-flex items-center px-4 py-2 border-2 border-gray-900 dark:border-white rounded-lg text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-200"
               >
                 <div className="w-4 h-4 mr-2 flex-shrink-0">{icons.github}</div>
                 GitHub
@@ -271,7 +271,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-gray-900 border-2 border-gray-900 rounded-lg text-sm font-medium text-white hover:bg-white hover:text-gray-900 transition-all duration-200"
+                className="inline-flex items-center px-4 py-2 bg-gray-900 dark:bg-white border-2 border-gray-900 dark:border-white rounded-lg text-sm font-medium text-white dark:text-black hover:bg-white dark:hover:bg-gray-200 hover:text-gray-900 transition-all duration-200"
               >
                 <div className="w-4 h-4 mr-2 flex-shrink-0">{icons.link}</div>
                 Live Demo
@@ -288,13 +288,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-dark-bg rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 sm:p-6 flex items-start justify-between gap-4 rounded-t-2xl">
+            <div className="sticky top-0 bg-white dark:bg-dark-bg border-b border-gray-200 dark:border-white/10 p-4 sm:p-6 flex items-start justify-between gap-4 rounded-t-2xl">
               <div className="flex-1">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                   {project.title}
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
@@ -318,10 +318,10 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
               >
                 <svg
-                  className="w-5 h-5 text-gray-500"
+                  className="w-5 h-5 text-gray-500 dark:text-gray-400"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -338,31 +338,31 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
             <div className="p-4 sm:p-6 space-y-6">
               {/* Description */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                   About
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                   {project.description}
                 </p>
               </div>
 
               {/* Tech Stack */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                   Tech Stack
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {project.techStack.map((tech, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+                      className="flex items-center bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 px-3 py-2 rounded-lg transition-colors"
                     >
                       {getIconByTech(tech) && (
-                        <div className="w-4 h-4 mr-2 text-gray-700 flex-shrink-0">
+                        <div className="w-4 h-4 mr-2 text-gray-700 dark:text-gray-300 flex-shrink-0">
                           {getIconByTech(tech)}
                         </div>
                       )}
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         {tech}
                       </span>
                     </div>
@@ -372,7 +372,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
 
               {/* Key Highlights */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
                   Key Highlights
                 </h3>
                 <div className="space-y-3">
@@ -391,7 +391,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                           />
                         </svg>
                       </div>
-                      <p className="text-gray-600 text-sm leading-relaxed flex-1">
+                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed flex-1">
                         {highlight}
                       </p>
                     </div>
@@ -400,13 +400,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
               </div>
 
               {/* Links */}
-              <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
+              <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200 dark:border-white/10">
                 {project.github && (
                   <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-5 py-2.5 border-2 border-gray-900 rounded-lg text-sm font-medium text-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-200"
+                    className="inline-flex items-center px-5 py-2.5 border-2 border-gray-900 dark:border-white rounded-lg text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-200"
                   >
                     <div className="w-4 h-4 mr-2 flex-shrink-0">
                       {icons.github}
@@ -419,7 +419,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-5 py-2.5 bg-gray-900 border-2 border-gray-900 rounded-lg text-sm font-medium text-white hover:bg-white hover:text-gray-900 transition-all duration-200"
+                    className="inline-flex items-center px-5 py-2.5 bg-gray-900 dark:bg-white border-2 border-gray-900 dark:border-white rounded-lg text-sm font-medium text-white dark:text-black hover:bg-white dark:hover:bg-gray-200 hover:text-gray-900 transition-all duration-200"
                   >
                     <div className="w-4 h-4 mr-2 flex-shrink-0">
                       {icons.link}
@@ -445,29 +445,33 @@ export default function Project() {
     filter === "all" ? projects : projects.filter(p => p.category === filter);
 
   return (
-    <section id="projects" className="py-20">
+    <section id="projects" className="py-20 dark:bg-dark-bg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Featured Projects
           </h2>
-          <p className="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Showcasing my professional work and contributions across different
             technologies and domains
           </p>
         </div>
 
         <div className="flex justify-center mb-8 sm:mb-12">
-          <div className="bg-white rounded-xl p-1 sm:p-2 shadow-lg w-full sm:w-auto overflow-x-auto">
+          <div className="bg-white dark:bg-white/5 rounded-xl p-1 sm:p-2 shadow-lg w-full sm:w-auto overflow-x-auto">
             <div className="flex gap-1 min-w-max">
               {["all", "frontend", "backend", "fullstack"].map(filterType => (
                 <button
                   key={filterType}
-                  onClick={() => setFilter(filterType as any)}
+                  onClick={() =>
+                    setFilter(
+                      filterType as "all" | "frontend" | "backend" | "fullstack"
+                    )
+                  }
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                     filter === filterType
-                      ? "bg-gray-900 text-white shadow-md"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      ? "bg-gray-900 dark:bg-white text-white dark:text-black shadow-md"
+                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/10"
                   }`}
                 >
                   {filterType.charAt(0).toUpperCase() + filterType.slice(1)}

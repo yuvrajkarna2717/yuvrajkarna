@@ -3,7 +3,7 @@ import { SiHappycow } from "react-icons/si";
 
 export default function Footer() {
   return (
-    <footer className="md:px-6 md:pt-8 pt-6 text-center text-black md:pb-6 pb-6">
+    <footer className="md:px-6 md:pt-8 pt-6 text-center text-black dark:text-white md:pb-6 pb-6">
       <div className="flex flex-row items-center justify-center gap-2 text-xl sm:text-2xl">
         <p className="flex items-center gap-2">
           Crafted with <FcLike className="w-5 h-5" /> and passion by

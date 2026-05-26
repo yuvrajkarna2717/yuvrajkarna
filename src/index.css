@@ -7,10 +7,6 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,12 +14,18 @@
 }
 
 @keyframes typewriter {
-  from { width: 0; }
-  to { width: 100%; }
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 @keyframes blink {
-  50% { border-color: transparent; }
+  50% {
+    border-color: transparent;
+  }
 }
 
 .typewriter {
@@ -31,7 +33,9 @@
   overflow: hidden;
   border-right: 2px solid #000;
   white-space: nowrap;
-  animation: typewriter 2s steps(16) 1s both, blink 1s step-end infinite;
+  animation:
+    typewriter 2s steps(16) 1s both,
+    blink 1s step-end infinite;
 }
 
 /* 

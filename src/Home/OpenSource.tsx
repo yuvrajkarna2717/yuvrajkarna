@@ -63,20 +63,20 @@ const OpenSource: React.FC = () => {
     index: number;
   }> = ({ contribution, index }) => (
     <div
-      className="bg-white rounded-lg p-4 sm:p-6 shadow-md border border-gray-200 transition-all duration-300 hover:shadow-xl animate-float"
+      className="bg-white dark:bg-white/5 rounded-lg p-4 sm:p-6 shadow-md border border-gray-200 dark:border-white/10 transition-all duration-300 hover:shadow-xl animate-float"
       style={{ animationDelay: `${index * 0.3}s` }}
     >
       <div className="flex flex-col sm:flex-row justify-between items-start mb-3 gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="text-base sm:text-lg font-semibold text-black truncate">
+          <h3 className="text-base sm:text-lg font-semibold text-black dark:text-white truncate">
             {contribution.project}
           </h3>
-          <p className="text-xs sm:text-sm text-gray-500 truncate">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">
             {contribution.organization}
           </p>
         </div>
         <div className="flex gap-2 flex-shrink-0 flex-wrap">
-          <span className="px-2 py-1 bg-black text-white text-xs rounded-full whitespace-nowrap">
+          <span className="px-2 py-1 bg-black dark:bg-white text-white dark:text-black text-xs rounded-full whitespace-nowrap">
             {contribution.type}
           </span>
           <span
@@ -91,14 +91,14 @@ const OpenSource: React.FC = () => {
         </div>
       </div>
 
-      <p className="text-gray-600 text-xs sm:text-sm mb-4 line-clamp-2 sm:line-clamp-none">
+      <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4 line-clamp-2 sm:line-clamp-none">
         {contribution.contribution}
       </p>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div className="flex items-center">
-          <div className="w-3 h-3 rounded-full bg-black mr-2 flex-shrink-0"></div>
-          <span className="text-xs sm:text-sm text-gray-700">
+          <div className="w-3 h-3 rounded-full bg-black dark:bg-white mr-2 flex-shrink-0"></div>
+          <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
             {contribution.language}
           </span>
         </div>
@@ -107,7 +107,7 @@ const OpenSource: React.FC = () => {
           href={contribution.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-black hover:text-gray-600 transition-colors duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
+          className="text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-400 transition-colors duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
         >
           View PR →
         </a>
@@ -128,23 +128,23 @@ const OpenSource: React.FC = () => {
       `}</style>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-6 sm:mb-8">
-        <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2 text-black">
+        <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2 text-black dark:text-white">
           Open Source Contributions
         </div>
-        <div className="text-sm sm:text-base text-center text-gray-600 mb-6 sm:mb-8">
+        <div className="text-sm sm:text-base text-center text-gray-600 dark:text-gray-400 mb-6 sm:mb-8">
           my contributions to open source projects
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-center mb-4 sm:mb-6">
-          <div className="bg-gray-100 rounded-lg p-1 flex w-full sm:w-auto">
+          <div className="bg-gray-100 dark:bg-white/10 rounded-lg p-1 flex w-full sm:w-auto">
             <button
               onClick={() => setActiveTab("Closed")}
               className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${
                 activeTab === "Closed"
-                  ? "bg-white text-black shadow-sm"
-                  : "text-gray-600 hover:text-black"
+                  ? "bg-white dark:bg-white/20 text-black dark:text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
               }`}
             >
               Closed ({closedContributions.length})
@@ -153,8 +153,8 @@ const OpenSource: React.FC = () => {
               onClick={() => setActiveTab("Open")}
               className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${
                 activeTab === "Open"
-                  ? "bg-white text-black shadow-sm"
-                  : "text-gray-600 hover:text-black"
+                  ? "bg-white dark:bg-white/20 text-black dark:text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
               }`}
             >
               Open ({openContributions.length})

@@ -9,7 +9,7 @@ import SkillsSlider from "./SkillsSlider";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full bg-white text-white font-sans">
+    <main className="relative min-h-screen w-full bg-white dark:bg-dark-bg text-black dark:text-white font-sans">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] z-0 pointer-events-none" />
       <Navbar />
       <Hero />

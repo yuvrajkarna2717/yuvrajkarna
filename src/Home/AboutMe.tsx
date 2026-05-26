@@ -23,7 +23,7 @@ export function AboutMe() {
   return (
     <section
       id="about"
-      className="w-full md:py-140 py-7 px-6 md:px-24 bg-white text-gray-800"
+      className="w-full md:py-140 py-7 px-6 md:px-24 bg-white dark:bg-dark-bg text-gray-800 dark:text-gray-100"
     >
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Heading */}
@@ -37,7 +37,7 @@ export function AboutMe() {
           </h2>
           {isVisible && (
             <div
-              className={`h-1 w-36 bg-black mx-auto rounded-full transition-all duration-700 ${
+              className={`h-1 w-36 bg-black dark:bg-white mx-auto rounded-full transition-all duration-700 ${
                 isVisible ? "animate-grow" : ""
               }`}
             />
@@ -51,20 +51,20 @@ export function AboutMe() {
             isVisible ? "opacity-100 animate-fade-in-delayed" : "opacity-0"
           }`}
         >
-          <p className="text-xl text-gray-800 font-light">
+          <p className="text-xl text-gray-800 dark:text-gray-100 font-light">
             Hi there! 👋 I'm a{" "}
             <span className="font-semibold text-black">Software Engineer</span>{" "}
             who loves crafting digital experiences.
           </p>
 
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             I turn ideas into reality through clean code and thoughtful design.
             Always excited about new challenges and learning opportunities.
           </p>
         </div>
 
         <div className="text-center">
-          <p className="text-2xl font-light text-gray-700 mb-6">
+          <p className="text-2xl font-light text-gray-700 dark:text-gray-300 mb-6">
             Let's connect!
           </p>
         </div>
@@ -75,19 +75,29 @@ export function AboutMe() {
             isVisible ? "opacity-100 animate-fade-in-slow" : "opacity-0"
           }`}
         >
-          <div className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200 group">
-            <p className="text-sm text-gray-500 mb-1">Phone</p>
-            <p className="font-medium text-gray-800">+91 7700833277</p>
+          <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-6 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-200 group">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+              Phone
+            </p>
+            <p className="font-medium text-gray-800 dark:text-gray-100">
+              +91 7700833277
+            </p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200 group">
-            <p className="text-sm text-gray-500 mb-1">Email</p>
-            <p className="font-medium text-gray-800">
+          <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-6 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-200 group">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+              Email
+            </p>
+            <p className="font-medium text-gray-800 dark:text-gray-100">
               yuvrajkarna.code@gmail.com
             </p>
           </div>
-          <div className="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition-colors duration-200 group">
-            <p className="text-sm text-gray-500 mb-1">Location</p>
-            <p className="font-medium text-gray-800">India (Remote-ready)</p>
+          <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-6 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-200 group">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+              Location
+            </p>
+            <p className="font-medium text-gray-800 dark:text-gray-100">
+              India (Remote-ready)
+            </p>
           </div>
         </div>
       </div>

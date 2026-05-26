@@ -48,7 +48,6 @@ const icons = {
   ),
 };
 
-
 const experiences: Experience[] = [
   {
     company: "Iquadra Information Services LLC",
@@ -59,7 +58,13 @@ const experiences: Experience[] = [
         name: "iQua.ai",
         role: "Frontend Developer (Intern)",
         duration: "June 2024 – April 2025",
-        techStack: ["React.js", "Redux Toolkit", "Bootstrap", "Debugging", "API Integration"],
+        techStack: [
+          "React.js",
+          "Redux Toolkit",
+          "Bootstrap",
+          "Debugging",
+          "API Integration",
+        ],
         description:
           "A cutting-edge AI-powered Interview platform revolutionizing the hiring process with intelligent interview methods and real-time metrics.",
         highlights: [
@@ -75,7 +80,14 @@ const experiences: Experience[] = [
         name: "PNN",
         role: "Frontend Developer (Intern)",
         duration: "May 2025 – Present",
-        techStack: ["React.js", "Redux Toolkit", "TailwindCSS", "WebRTC", "Payment Integration", "UI/UX Design"],
+        techStack: [
+          "React.js",
+          "Redux Toolkit",
+          "TailwindCSS",
+          "WebRTC",
+          "Payment Integration",
+          "UI/UX Design",
+        ],
         description:
           "A comprehensive news platform MVP with WebRTC-based video/audio recording capabilities, real-time transcription, and enhanced user engagement features.",
         highlights: [
@@ -117,7 +129,6 @@ const experiences: Experience[] = [
   },
 ];
 
-
 const ProductCard: React.FC<{ product: Product; index: number }> = ({
   product,
   index,
@@ -134,16 +145,18 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 w-full border border-gray-200 hover:border-gray-900 transform hover:-translate-y-1">
+    <div className="bg-white dark:bg-white/5 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 sm:p-6 w-full border border-gray-200 dark:border-white/10 hover:border-gray-900 dark:hover:border-white/30 transform hover:-translate-y-1">
       <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-4 gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0">
+          <div className="w-8 h-8 bg-gray-900 dark:bg-white text-white dark:text-black rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0">
             {index + 1}
           </div>
-          <h4 className="text-lg sm:text-xl font-bold text-gray-900">{product.name}</h4>
+          <h4 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+            {product.name}
+          </h4>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap">
+          <span className="px-3 py-1 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap">
             📅 {product.duration}
           </span>
           <span
@@ -164,12 +177,12 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
       </div>
 
       <div className="mb-4">
-        <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-900 text-white rounded-lg text-xs sm:text-sm font-medium shadow-md">
+        <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-900 dark:bg-white/10 text-white rounded-lg text-xs sm:text-sm font-medium shadow-md">
           {product.role}
         </span>
       </div>
 
-      <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
         {product.description}
       </p>
 
@@ -177,21 +190,23 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
         {product.techStack.map((tech, idx) => (
           <div
             key={idx}
-            className="flex items-center bg-gray-50 px-2 py-1 rounded-md"
+            className="flex items-center bg-gray-50 dark:bg-white/5 px-2 py-1 rounded-md"
           >
             {getIconByTech(tech) && (
-              <div className="w-3 h-3 mr-1 text-gray-700 flex-shrink-0">
+              <div className="w-3 h-3 mr-1 text-gray-700 dark:text-gray-300 flex-shrink-0">
                 {getIconByTech(tech)}
               </div>
             )}
-            <span className="text-xs font-medium text-gray-700">{tech}</span>
+            <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+              {tech}
+            </span>
           </div>
         ))}
       </div>
 
       <button
         onClick={() => setExpanded(!expanded)}
-        className="text-xs sm:text-sm font-medium text-gray-900 hover:text-gray-700 flex items-center mb-4 transition-colors bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg"
+        className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 flex items-center mb-4 transition-colors bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 px-3 py-2 rounded-lg"
       >
         {expanded ? "Hide details" : "Show details"}
         <svg
@@ -208,7 +223,7 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
       </button>
 
       {expanded && (
-        <div className="space-y-2 text-gray-600 text-xs mb-4 pl-3 border-l-2 border-blue-200">
+        <div className="space-y-2 text-gray-600 dark:text-gray-400 text-xs mb-4 pl-3 border-l-2 border-blue-200 dark:border-blue-700">
           {product.highlights.map((highlight, idx) => (
             <p key={idx}>{highlight}</p>
           ))}
@@ -220,7 +235,7 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
           href={product.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center px-3 py-2 bg-gray-900 rounded-md text-xs font-medium text-white hover:bg-gray-700 transition-colors"
+          className="inline-flex items-center px-3 py-2 bg-gray-900 dark:bg-white dark:text-black rounded-md text-xs font-medium text-white hover:bg-gray-700 dark:hover:bg-gray-200 transition-colors"
         >
           <div className="w-3 h-3 mr-1 flex-shrink-0">{icons.link}</div>
           View Product
@@ -239,8 +254,12 @@ const ExperienceCard: React.FC<{ experience: Experience }> = ({
       <div className="bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-4 sm:p-6 md:p-8 mb-8 shadow-xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="text-white">
-            <h3 className="text-2xl sm:text-3xl font-bold mb-2">{experience.company}</h3>
-            <p className="text-gray-200 text-base sm:text-lg">{experience.position}</p>
+            <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+              {experience.company}
+            </h3>
+            <p className="text-gray-200 text-base sm:text-lg">
+              {experience.position}
+            </p>
           </div>
           <div className="text-left sm:text-right">
             <span className="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-white text-gray-900 rounded-xl text-xs sm:text-sm font-bold shadow-lg">
@@ -256,13 +275,13 @@ const ExperienceCard: React.FC<{ experience: Experience }> = ({
       {/* Products Timeline */}
       <div className="relative pl-6 sm:pl-8">
         {/* Vertical Timeline Line */}
-        <div className="absolute left-3 sm:left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300"></div>
+        <div className="absolute left-3 sm:left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gray-900 via-gray-600 to-gray-300 dark:from-white/30 dark:via-white/20 dark:to-white/10"></div>
 
         <div className="space-y-6 sm:space-y-8">
           {experience.products.map((product, index) => (
             <div key={index} className="relative">
               {/* Timeline Dot */}
-              <div className="absolute -left-[1.375rem] sm:-left-6 top-4 sm:top-6 w-3 h-3 sm:w-4 sm:h-4 bg-gray-900 rounded-full border-2 sm:border-4 border-white shadow-lg z-10"></div>
+              <div className="absolute -left-[1.375rem] sm:-left-6 top-4 sm:top-6 w-3 h-3 sm:w-4 sm:h-4 bg-gray-900 dark:bg-white rounded-full border-2 sm:border-4 border-white dark:border-black shadow-lg z-10"></div>
 
               {/* Product Card */}
               <div className="ml-2 sm:ml-4">
@@ -278,18 +297,18 @@ const ExperienceCard: React.FC<{ experience: Experience }> = ({
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-20 bg-white">
+    <section id="experience" className="py-20 bg-white dark:bg-dark-bg">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
-          <blockquote className="text-3xl md:text-4xl italic text-gray-800 font-light mb-4">
+          <blockquote className="text-3xl md:text-4xl italic text-gray-800 dark:text-gray-200 font-light mb-4">
             "The only source of knowledge is experience."
           </blockquote>
-          <cite className="block text-gray-500 text-sm mb-8">
+          <cite className="block text-gray-500 dark:text-gray-400 text-sm mb-8">
             — Albert Einstein
           </cite>
 
           <AnimationTitle title="Professional Experience" />
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mt-4">
             My professional journey building innovative products and solutions
           </p>
         </div>
