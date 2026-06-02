@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   FaGithub,
   FaLinkedin,
@@ -10,7 +11,42 @@ import { BsArrowDown } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { SiHappycow } from "react-icons/si";
 
+const ROLES = [
+  "Software Engineer",
+  "Open Source Contributor",
+  "Problem Solver",
+  "Bug Creator 🐛",
+];
+
 export default function Hero() {
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [displayed, setDisplayed] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = ROLES[roleIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!deleting && displayed.length < current.length) {
+      timeout = setTimeout(
+        () => setDisplayed(current.slice(0, displayed.length + 1)),
+        80
+      );
+    } else if (!deleting && displayed.length === current.length) {
+      timeout = setTimeout(() => setDeleting(true), 2200);
+    } else if (deleting && displayed.length > 0) {
+      timeout = setTimeout(
+        () => setDisplayed(current.slice(0, displayed.length - 1)),
+        40
+      );
+    } else if (deleting && displayed.length === 0) {
+      setDeleting(false);
+      setRoleIndex(i => (i + 1) % ROLES.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [displayed, deleting, roleIndex]);
+
   return (
     <section className="flex items-center justify-center text-black dark:text-white md:mt-14 mt-10">
       <div className="text-center max-w-3xl px-4 sm:px-10">
@@ -40,8 +76,9 @@ export default function Hero() {
           <SiHappycow className="hidden md:block w-12 h-12 transition-all duration-300 group-hover:scale-125 group-hover:rotate-6 group-hover:translate-x-2 group-hover:-translate-y-2" />
         </div>
 
-        <p className="md:text-3xl sm:text-2xl text-xl font-normal mb-6 tracking-widest">
-          Software Engineer
+        <p className="md:text-3xl sm:text-2xl text-xl font-normal mb-6 tracking-widest min-h-[2.5rem]">
+          {displayed}
+          <span className="animate-blink">|</span>
         </p>
 
         {/* About Summary */}

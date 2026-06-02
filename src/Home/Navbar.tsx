@@ -11,8 +11,10 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
+    { name: "Blog", to: "#blog" },
     { name: "My Story", to: "/story" },
-    { name: "Open Source Contributions", to: "#opensource" },
+    { name: "Uses", to: "/uses" },
+    { name: "Open Source", to: "#opensource" },
   ];
 
   return (

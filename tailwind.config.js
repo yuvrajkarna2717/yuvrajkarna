@@ -37,6 +37,10 @@ export default {
           "0%": { width: "0%" },
           "100%": { width: "5rem" },
         },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
       },
       animation: {
         "arrow-bounce": "arrow-bounce 0.6s ease-in-out infinite",
@@ -46,6 +50,7 @@ export default {
           "fadeIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "fade-in-slow": "fadeIn 2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         grow: "growLine 2s ease-out forwards",
+        blink: "blink 1s step-end infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
