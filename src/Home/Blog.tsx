@@ -14,38 +14,32 @@ export default function Blog() {
         Writing about things I've built, broken, and learned.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+      <div className="max-w-3xl mx-auto divide-y divide-gray-100 dark:divide-white/10">
         {previewPosts.map(post => {
           const isExternal = post.external && post.externalUrl;
 
-          const cardContent = (
-            <div className="group block p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30 transition-all duration-200 hover:-translate-y-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                {post.tags.map(tag => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2 py-0.5 rounded-full bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <h3 className="text-base font-semibold leading-snug group-hover:underline mb-2 flex items-start gap-1">
-                {post.title}
+          const rowContent = (
+            <div className="flex items-center justify-between gap-4 py-3.5 group -mx-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+              <p className="flex-1 min-w-0 text-sm font-medium leading-snug flex items-center gap-1.5 group-hover:underline">
+                <span className="truncate">{post.title}</span>
                 {isExternal && (
-                  <ArrowUpRight className="w-4 h-4 shrink-0 mt-0.5 text-gray-400 dark:text-gray-500" />
+                  <ArrowUpRight className="w-3.5 h-3.5 shrink-0 text-gray-400 dark:text-gray-500" />
                 )}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-                {post.summary}
               </p>
-
-              <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
-                <span>{post.date}</span>
-                <span>·</span>
-                <span>{post.readTime} read</span>
-                <span className="ml-auto text-black dark:text-white group-hover:translate-x-1 transition-transform duration-200">
+              <div className="shrink-0 flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+                <div className="hidden sm:flex gap-1.5">
+                  {post.tags.slice(0, 2).map(tag => (
+                    <span
+                      key={tag}
+                      className="px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-white/10"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <span className="whitespace-nowrap hidden md:inline">{post.date}</span>
+                <span className="whitespace-nowrap">{post.readTime}</span>
+                <span className="text-black dark:text-white group-hover:translate-x-0.5 transition-transform duration-150">
                   →
                 </span>
               </div>
@@ -59,11 +53,11 @@ export default function Blog() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {cardContent}
+              {rowContent}
             </a>
           ) : (
             <Link key={post.slug} to={`/blog/${post.slug}`}>
-              {cardContent}
+              {rowContent}
             </Link>
           );
         })}

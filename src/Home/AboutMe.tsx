@@ -53,7 +53,7 @@ export function AboutMe() {
         >
           <p className="text-xl text-gray-800 dark:text-gray-100 font-light">
             Hi there! 👋 I'm a{" "}
-            <span className="font-semibold text-black">Software Engineer</span>{" "}
+            <span className="font-semibold text-black dark:text-white">Software Engineer</span>{" "}
             who loves crafting digital experiences.
           </p>
 

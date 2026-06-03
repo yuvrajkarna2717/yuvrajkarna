@@ -1,480 +1,538 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Github,
-  Code,
-  ExternalLink,
-  Rocket,
-  Lightbulb,
-  Mountain,
-  Trophy,
-  Coffee,
-  Bug,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { ExternalLink, Sun, Moon } from "lucide-react";
 import { FaBackward } from "react-icons/fa6";
+import { FaGithub } from "react-icons/fa";
+import { SiLeetcode, SiGeeksforgeeks } from "react-icons/si";
 import { useTheme } from "../context/useTheme";
 
-export default function Story() {
-  const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface GitHubData {
+  repos: number;
+  followers: number;
+  stars: number;
+}
+interface LeetCodeData {
+  total: number;
+  easy: number;
+  medium: number;
+  hard: number;
+}
 
-  // Links object
-  const links = {
-    leetcode: "https://leetcode.com/u/yuvrajkarna27",
-    geeksforgeeks: "https://auth.geeksforgeeks.org/user/yuvrajkarna27",
-    github: "https://github.com/yuvrajkarna2717",
-    githubProjects: "https://github.com/yuvrajkarna2717?tab=repositories",
-    contact: "mailto:yuvrajkarna.code@gmail.com",
-    resume: "/resume/YuvrajKarna.pdf",
-  };
+// ── Worker endpoints ──────────────────────────────────────────────────────────
+const WORKER = "https://leetcode-stats-worker.yuvrajkarna.workers.dev";
+
+const LC_CACHE_KEY = "lc_stats_cache";
+const CACHE_TTL = 24 * 60 * 60 * 1000;
+
+const LC_FALLBACK: LeetCodeData = { total: 1000, easy: 400, medium: 480, hard: 120 };
+const GH_FALLBACK: GitHubData   = { repos: 30, followers: 50, stars: 25 };
+
+function getCachedLC(): LeetCodeData | null {
+  try {
+    const raw = localStorage.getItem(LC_CACHE_KEY);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw);
+    return Date.now() - ts < CACHE_TTL ? data : null;
+  } catch { return null; }
+}
+function setCachedLC(data: LeetCodeData) {
+  try { localStorage.setItem(LC_CACHE_KEY, JSON.stringify({ data, ts: Date.now() })); }
+  catch { /* ignore */ }
+}
+
+// ── Animated number hook ──────────────────────────────────────────────────────
+function useCountUp(target: number, duration = 1200) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const started = useRef(false);
 
   useEffect(() => {
-    setIsVisible(true);
-    const handleScroll = () => {
-      const totalHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (window.scrollY / totalHeight) * 100;
-      setScrollProgress(progress);
+    const node = ref.current;
+    if (!node || target === 0) return;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started.current) {
+        started.current = true;
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min((now - t0) / duration, 1);
+          setCount(Math.floor((1 - Math.pow(1 - p, 3)) * target));
+          if (p < 1) requestAnimationFrame(tick);
+          else setCount(target);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.5 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return { count, ref };
+}
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+function Num({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const { count, ref } = useCountUp(value);
+  return (
+    <span ref={ref} className="font-mono tabular-nums">
+      {count.toLocaleString()}{suffix}
+    </span>
+  );
+}
+
+function LiveBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-green-500">
+      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+      live
+    </span>
+  );
+}
+
+function Divider() {
+  return (
+    <div className="flex items-center gap-4 my-16">
+      <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
+      <div className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-white/20" />
+      <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />
+    </div>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+export default function Story() {
+  const navigate  = useNavigate();
+  const { theme, toggleTheme } = useTheme();
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [gh,   setGh]   = useState<GitHubData>(GH_FALLBACK);
+  const [lc,   setLc]   = useState<LeetCodeData>(LC_FALLBACK);
+  const [ghLive, setGhLive] = useState(false);
+  const [lcLive, setLcLive] = useState(false);
+
+  // ── Fetch data ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    // LeetCode – serve cache first
+    const cached = getCachedLC();
+    if (cached) { setLc(cached); setLcLive(true); }
+    else {
+      fetch(`${WORKER}/?username=yuvrajkarna27`)
+        .then(r => r.json())
+        .then(json => {
+          const nums: { difficulty: string; count: number }[] =
+            json?.data?.matchedUser?.submitStats?.acSubmissionNum ?? [];
+          const get = (d: string) => nums.find(n => n.difficulty === d)?.count ?? 0;
+          const data = { total: get("All"), easy: get("Easy"), medium: get("Medium"), hard: get("Hard") };
+          setCachedLC(data);
+          setLc(data);
+          setLcLive(true);
+        })
+        .catch(() => {/* keep fallback */});
+    }
+
+    // GitHub
+    fetch(`${WORKER}/github?username=yuvrajkarna2717`)
+      .then(r => r.json())
+      .then((data: GitHubData) => { setGh(data); setGhLive(true); })
+      .catch(() => {/* keep fallback */});
+
+    // Scroll progress
+    const onScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const chapters = [
-    {
-      title: "The Spark",
-      subtitle: "Where curiosity ignited",
-      story:
-        "It was a quiet evening when I stumbled upon my first line of code. The glow of the screen reflected in my eyes as I typed 'Hello World' - three simple characters that would become the first step of an incredible journey.",
-      content:
-        "What started as curiosity quickly became obsession. I spent nights exploring how websites worked, dismantling them in developer tools, and rebuilding them piece by piece. Every tutorial completed felt like unlocking a new superpower.",
-      icon: <Lightbulb className="w-10 h-10" />,
-      milestone: "First Hello World",
-      year: "The Beginning",
-      achievement: "Discovered the magic of programming",
-    },
-    {
-      title: "The Grind",
-      subtitle: "Building the foundation",
-      story:
-        "They say mastery requires 10,000 hours. I started my clock with LeetCode problem #1. Easy at first, then increasingly impossible. Each failed submission taught me more than any success could.",
-      content:
-        "Dawn after dawn, I sat with algorithms that seemed insurmountable. Two-pointer techniques, dynamic programming, graph traversals - each concept was a mountain to climb. But slowly, patterns emerged. My brain began thinking in loops and recursion.",
-      icon: <Mountain className="w-10 h-10" />,
-      milestone: "1000+ Problems",
-      year: "The Struggle",
-      achievement: "Transformed frustration into expertise",
-      platform: "leetcode",
-    },
-    {
-      title: "The Deep Dive",
-      subtitle: "Understanding the 'why'",
-      story:
-        "Solving problems wasn't enough. I needed to understand the theory, the computer science that powered everything. GeeksforGeeks became my digital library.",
-      content:
-        "From time complexity analysis to system design principles, I devoured articles and tutorials. Data structures came alive - trees weren't just diagrams, they were elegant solutions to real problems. Algorithms had stories, histories, inventors.",
-      icon: <Code className="w-10 h-10" />,
-      milestone: "Deep CS Knowledge",
-      year: "The Foundation",
-      achievement: "Mastered fundamentals that last forever",
-      platform: "geeksforgeeks",
-    },
-    {
-      title: "The Builder",
-      subtitle: "Creating real impact",
-      story:
-        "Knowledge without application is just trivia. It was time to build. GitHub became my canvas, and code became my art.",
-      content:
-        "One commit led to another. Projects grew from ideas scribbled on napkins to deployed applications touching real users. Open source taught me collaboration. Every pull request was a conversation. Every issue was a lesson in empathy.",
-      icon: <Github className="w-10 h-10" />,
-      milestone: "1000+ Contributions",
-      year: "The Creation",
-      achievement: "Built solutions that matter",
-      platform: "github",
-    },
-    {
-      title: "The Journey Continues",
-      subtitle: "Always growing, always learning",
-      story:
-        "This isn't an ending - it's a checkpoint. Every skill mastered reveals ten more to learn. Every project completed sparks ideas for the next.",
-      content:
-        "The developer I am today would amaze the person who wrote that first Hello World. But the best part? I'm still that same curious person, still asking 'how does this work?', still excited by every new challenge.",
-      icon: <Rocket className="w-10 h-10" />,
-      milestone: "Next Chapter",
-      year: "The Future",
-      achievement: "Ready for whatever comes next",
-    },
-  ];
-
-  const stats = [
-    {
-      label: "Problems Conquered",
-      value: "1000+",
-      platform: "LeetCode & GFG",
-      icon: <Code className="w-6 h-6" />,
-    },
-    {
-      label: "Green Squares",
-      value: "1000+",
-      platform: "GitHub",
-      icon: <Github className="w-6 h-6" />,
-    },
-    {
-      label: "Coffee Consumed",
-      value: "∞",
-      platform: "Fuel for Code",
-      icon: <Coffee className="w-6 h-6" />,
-    },
-    {
-      label: "Bugs Squashed",
-      value: "Too Many",
-      platform: "Battle Scars",
-      icon: <Bug className="w-6 h-6" />,
-    },
-  ];
+  const links = {
+    leetcode:      "https://leetcode.com/u/yuvrajkarna27",
+    geeksforgeeks: "https://auth.geeksforgeeks.org/user/yuvrajkarna27",
+    github:        "https://github.com/yuvrajkarna2717",
+    githubRepos:   "https://github.com/yuvrajkarna2717?tab=repositories",
+    contact:       "mailto:yuvrajkarna.code@gmail.com",
+    resume:        "/resume/YuvrajKarna.pdf",
+  };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white relative">
-      {/* Background Grid Pattern */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] z-0 pointer-events-none" />
-
-      {/* Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800 z-50">
+    <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white">
+      {/* ── Scroll progress bar ──────────────────────────────────────────── */}
+      <div className="fixed top-0 left-0 w-full h-0.5 bg-gray-200 dark:bg-white/10 z-50">
         <div
-          className="h-full bg-black dark:bg-white transition-all duration-300"
+          className="h-full bg-black dark:bg-white transition-all duration-100"
           style={{ width: `${scrollProgress}%` }}
         />
       </div>
 
-      {/* Back Button */}
+      {/* ── Fixed controls ───────────────────────────────────────────────── */}
       <div className="fixed top-6 left-6 z-50">
         <button
-          className="flex items-center justify-center gap-2 px-6 py-3 bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-full font-semibold hover:bg-black/20 dark:hover:bg-white/20 transition-all border border-black/20 dark:border-white/20 hover:scale-105"
           onClick={() => navigate("/")}
+          className="flex items-center gap-2 px-4 py-2 text-sm bg-white dark:bg-white/10 backdrop-blur-sm rounded-full border border-gray-200 dark:border-white/20 hover:border-gray-400 dark:hover:border-white/40 transition-all shadow-sm"
         >
-          <FaBackward className="w-4 h-4" />
-          <span>Back</span>
+          <FaBackward className="w-3.5 h-3.5" />
+          Back
         </button>
       </div>
-
-      {/* Theme Toggle */}
       <div className="fixed top-6 right-6 z-50">
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="p-3 bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-full hover:bg-black/20 dark:hover:bg-white/20 transition-all border border-black/20 dark:border-white/20"
+          className="p-2.5 bg-white dark:bg-white/10 backdrop-blur-sm rounded-full border border-gray-200 dark:border-white/20 hover:border-gray-400 dark:hover:border-white/40 transition-all shadow-sm"
         >
-          {theme === "dark" ? (
-            <Sun className="w-5 h-5" />
-          ) : (
-            <Moon className="w-5 h-5" />
-          )}
+          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
       </div>
 
-      {/* Hero Section */}
-      <div
-        className={`relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-      >
-        <div className="text-center space-y-6 max-w-4xl">
-          <div className="inline-block">
-            <div className="flex items-center gap-3 bg-black/5 dark:bg-white/5 backdrop-blur-sm px-6 py-2 rounded-full border border-black/20 dark:border-white/20">
-              <div className="w-2 h-2 bg-black dark:bg-white rounded-full animate-pulse" />
-              <span className="text-sm font-mono">Status: Always Learning</span>
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
+      <section className="min-h-screen flex items-center justify-center px-6 py-24">
+        <div className="max-w-2xl mx-auto text-center space-y-8">
+          <p className="text-sm font-mono text-gray-400 dark:text-gray-500 tracking-widest uppercase">
+            My coding odyssey
+          </p>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight">
+            From <em className="not-italic text-gray-400 dark:text-gray-500">Hello World</em>
+            <br />to Here
+          </h1>
+          <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed max-w-lg mx-auto">
+            A personal account of late nights, stubborn bugs, and the quiet satisfaction
+            of shipping something real. Told honestly, without polish.
+          </p>
+          <div className="flex gap-4 justify-center pt-4">
+            <a
+              href="#chapter-1"
+              className="px-7 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-semibold hover:scale-105 transition-transform"
+            >
+              Start reading
+            </a>
+            <a
+              href={links.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-7 py-3 rounded-full text-sm font-semibold border border-gray-200 dark:border-white/20 hover:border-gray-400 dark:hover:border-white/40 transition-all flex items-center gap-2"
+            >
+              <FaGithub className="w-4 h-4" />
+              GitHub
+            </a>
+          </div>
+
+          {/* Teaser stats row */}
+          <div className="flex items-center justify-center gap-8 pt-8 text-center">
+            <div>
+              <p className="text-2xl font-bold font-mono"><Num value={lc.total} />+</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">problems solved</p>
+            </div>
+            <div className="w-px h-8 bg-gray-200 dark:bg-white/10" />
+            <div>
+              <p className="text-2xl font-bold font-mono"><Num value={gh.repos} />+</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">repos shipped</p>
+            </div>
+            <div className="w-px h-8 bg-gray-200 dark:bg-white/10" />
+            <div>
+              <p className="text-2xl font-bold font-mono"><Num value={gh.followers} />+</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">GitHub followers</p>
             </div>
           </div>
+        </div>
+      </section>
 
-          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black leading-tight">
-            My Coding
-            <br />
-            Odyssey
-          </h1>
+      {/* ── CHAPTERS ─────────────────────────────────────────────────────── */}
+      <div className="max-w-2xl mx-auto px-6 pb-32 space-y-0">
 
-          <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            A tale of late nights, countless bugs, breakthrough moments, and the
-            relentless pursuit of mastery. This is my journey from curious
-            beginner to passionate developer.
+        {/* ── Chapter 1: The Spark ─────────────────────────────────────── */}
+        <section id="chapter-1" className="pt-8">
+          <p className="text-xs font-mono text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3">
+            Chapter 01
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black mb-8 leading-tight">
+            The Spark
+          </h2>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+            There's a version of this story that starts with a dramatic midnight epiphany.
+            Mine was less cinematic. I was watching a tutorial, typed <code className="text-sm bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded font-mono">console.log("Hello")</code>,
+            and something changed. Not in the code — in me. I felt the machine do exactly
+            what I told it to. No ambiguity, no negotiation. Just logic.
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center pt-6">
-            <a
-              href="#story"
-              className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg"
-            >
-              Start Reading
-            </a>
-            <a
-              href="#contact"
-              className="px-8 py-3 bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-full font-semibold hover:bg-black/20 dark:hover:bg-white/20 transition-all border border-black/20 dark:border-white/20"
-            >
-              Skip to End
-            </a>
-          </div>
-        </div>
+          <blockquote className="border-l-4 border-black dark:border-white pl-5 my-8 text-xl font-light italic text-gray-700 dark:text-gray-300 leading-relaxed">
+            "That feeling of making something out of nothing — I've been chasing it ever since."
+          </blockquote>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-10 animate-bounce">
-          <div className="w-6 h-10 border-2 border-black/30 dark:border-white/30 rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-3 bg-black/50 dark:bg-white/50 rounded-full" />
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Section */}
-      <div id="stats" className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-            Journey By Numbers
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-black/5 dark:bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30 transition-all hover:scale-105"
-              >
-                <div className="mb-3">{stat.icon}</div>
-                <div className="text-4xl sm:text-5xl font-black mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                  {stat.label}
-                </div>
-                <div className="text-sm text-gray-500 font-mono">
-                  {stat.platform}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Horizontal Timeline Story */}
-      <div id="story" className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">
-            The Story Unfolds
-          </h2>
-          <p className="text-center text-gray-600 dark:text-gray-400 mb-16 max-w-2xl mx-auto">
-            Scroll through the chapters of my journey. Each step was a lesson,
-            each challenge was growth.
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+            I spent the next weeks taking apart websites in DevTools. Every time I changed a
+            style or removed an element, a little dopamine hit. I wasn't building anything useful.
+            I was just exploring. But that curiosity — unstructured and obsessive — laid the
+            foundation for everything that followed.
           </p>
 
-          {/* Horizontal Timeline Path */}
-          <div className="relative mb-20">
-            <div className="hidden lg:block absolute top-20 left-0 right-0 h-1 bg-black/20 dark:bg-white/20" />
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-4">
-              {chapters.map((chapter, index) => (
-                <div key={index} className="relative">
-                  <div className="hidden lg:block absolute top-20 left-1/2 w-6 h-6 bg-black dark:bg-white rounded-full border-4 border-gray-200 dark:border-gray-800 transform -translate-x-1/2 -translate-y-1/2 z-10" />
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-black/10 dark:bg-white/10 rounded-full flex items-center justify-center mb-4 border border-black/20 dark:border-white/20">
-                      {chapter.icon}
-                    </div>
-                    <h3 className="text-xl font-bold mb-1 mt-2">
-                      {chapter.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                      {chapter.subtitle}
-                    </p>
-                    <span className="text-xs font-mono text-gray-500 dark:text-gray-500">
-                      {chapter.year}
-                    </span>
-                  </div>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+            HTML turned into CSS turned into JavaScript turned into "okay, what else is there?"
+            The answer, it turned out, was everything.
+          </p>
+        </section>
+
+        <Divider />
+
+        {/* ── Chapter 2: The Grind ─────────────────────────────────────── */}
+        <section id="chapter-2">
+          <p className="text-xs font-mono text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3">
+            Chapter 02
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black mb-8 leading-tight">
+            The Grind
+          </h2>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+            I opened LeetCode for the first time expecting it to be like the tutorials — a walkthrough
+            with a happy ending. Problem #1: Two Sum. Easy difficulty. I sat with it for forty minutes.
+            Eventually I got it. Then I tried something medium, and I didn't get it for two days.
+          </p>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+            That was the beginning of a long, slow rewiring of how my brain works. Two pointers.
+            Sliding windows. Recursion. Dynamic programming — which felt like dark magic until,
+            one afternoon, it didn't. Patterns started appearing where there were only problems before.
+          </p>
+
+          {/* LeetCode stats callout */}
+          <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-6 mb-8">
+            <div className="flex items-center gap-2 mb-5">
+              <SiLeetcode className="w-5 h-5 text-orange-500" />
+              <span className="font-semibold text-sm">LeetCode</span>
+              {lcLive && <LiveBadge />}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              {[
+                { label: "Total solved", value: lc.total, suffix: "+" },
+                { label: "Easy",         value: lc.easy,  suffix: "+" },
+                { label: "Medium",       value: lc.medium, suffix: "+" },
+                { label: "Hard",         value: lc.hard,  suffix: "+" },
+              ].map(s => (
+                <div key={s.label}>
+                  <p className="text-2xl font-bold font-mono">
+                    <Num value={s.value} suffix={s.suffix} />
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{s.label}</p>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Story Sections */}
-          <div className="space-y-32">
-            {chapters.map((chapter, index) => (
-              <div key={index} className="relative">
-                <div
-                  className={`max-w-4xl mx-auto \${index % 2 === 0 ? "" : "lg:ml-auto"}`}
-                >
-                  <div className="bg-black/5 dark:bg-white/5 backdrop-blur-xl rounded-3xl p-8 sm:p-12 border border-black/10 dark:border-white/10 shadow-2xl">
-                    <div className="flex items-start gap-6 mb-6">
-                      <div className="flex-shrink-0 w-16 h-16 bg-black/10 dark:bg-white/10 rounded-2xl flex items-center justify-center border border-black/20 dark:border-white/20">
-                        {chapter.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm text-gray-600 dark:text-gray-400 font-mono mb-1">
-                          Chapter {index + 1} • {chapter.year}
-                        </div>
-                        <h3 className="text-3xl sm:text-4xl font-black mb-2">
-                          {chapter.title}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-lg">
-                          {chapter.subtitle}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-6 text-gray-300 leading-relaxed">
-                      <p className="text-xl sm:text-2xl font-light italic border-l-4 border-black dark:border-white pl-6 text-gray-700 dark:text-gray-300">
-                        "{chapter.story}"
-                      </p>
-                      <p className="text-lg text-gray-700 dark:text-gray-300">
-                        {chapter.content}
-                      </p>
-                    </div>
-
-                    <div className="mt-8 p-6 bg-black/5 dark:bg-white/5 rounded-2xl border border-black/10 dark:border-white/10">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Trophy className="w-5 h-5" />
-                        <span className="text-sm font-mono text-gray-600 dark:text-gray-400">
-                          Achievement Unlocked
-                        </span>
-                      </div>
-                      <div className="text-xl font-bold">
-                        {chapter.achievement}
-                      </div>
-                      <div className="text-gray-600 dark:text-gray-400 font-mono mt-1">
-                        {chapter.milestone}
-                      </div>
-                    </div>
-
-                    {/* Platform-specific content */}
-                    {chapter.platform === "leetcode" && (
-                      <div className="mt-8">
-                        <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-6 border border-black/10 dark:border-white/10">
-                          <h4 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                            <Mountain className="w-6 h-6" />
-                            LeetCode Journey
-                          </h4>
-                          <p className="text-gray-700 dark:text-gray-300 mb-4">
-                            From Easy to Hard, from brute force to optimal
-                            solutions. Each problem solved was a battle won,
-                            each concept mastered was a level gained.
-                          </p>
-                          <a
-                            href={links.leetcode}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            View LeetCode Profile
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {chapter.platform === "geeksforgeeks" && (
-                      <div className="mt-8">
-                        <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-6 border border-black/10 dark:border-white/10">
-                          <h4 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                            <Code className="w-6 h-6" />
-                            GeeksforGeeks Learning Path
-                          </h4>
-                          <p className="text-gray-700 dark:text-gray-300 mb-4">
-                            My university of computer science. Every article
-                            read, every concept absorbed, built the foundation
-                            that everything else stands on.
-                          </p>
-                          <a
-                            href={links.geeksforgeeks}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            View GFG Profile
-                          </a>
-                        </div>
-                      </div>
-                    )}
-
-                    {chapter.platform === "github" && (
-                      <div className="mt-8">
-                        <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-6 border border-black/10 dark:border-white/10">
-                          <h4 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                            <Github className="w-6 h-6" />
-                            GitHub Contributions
-                          </h4>
-                          <p className="text-gray-700 dark:text-gray-300 mb-4">
-                            Every green square tells a story. A bug fixed at 2
-                            AM. A feature shipped on a Saturday. A contribution
-                            that helped someone across the world.
-                          </p>
-                          <div className="flex flex-wrap gap-3">
-                            <a
-                              href={links.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-6 py-3 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-full font-semibold transition-all hover:scale-105"
-                            >
-                              <Github className="w-4 h-4" />
-                              View Profile
-                            </a>
-                            <a
-                              href={links.githubProjects}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-6 py-3 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 rounded-full font-semibold transition-all border border-black/20 dark:border-white/20"
-                            >
-                              <Code className="w-4 h-4" />
-                              Browse Projects
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Call to Action */}
-      <div id="contact" className="relative py-32 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-black/5 dark:bg-white/5 backdrop-blur-xl rounded-3xl p-12 sm:p-16 border border-black/10 dark:border-white/10 shadow-2xl">
-            <Rocket className="w-16 h-16 mx-auto mb-6" />
-            <h2 className="text-4xl sm:text-5xl font-black mb-6">
-              Let's Write the Next Chapter Together
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-              Every great story needs collaboration. Whether you're building
-              something revolutionary, solving hard problems, or just want to
-              talk code - I'm ready for the next adventure.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="mt-5 pt-5 border-t border-gray-200 dark:border-white/10">
               <a
-                href={links.contact}
-                className="px-10 py-4 bg-black dark:bg-white text-white dark:text-black rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-xl"
-              >
-                Start a Conversation
-              </a>
-              <a
-                href={links.resume}
+                href={links.leetcode}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-10 py-4 bg-black/10 dark:bg-white/10 backdrop-blur-sm rounded-full font-bold text-lg hover:bg-black/20 dark:hover:bg-white/20 transition-all border border-black/20 dark:border-white/20"
+                className="inline-flex items-center gap-2 text-sm hover:underline text-gray-500 dark:text-gray-400"
               >
-                View My Resume
+                View LeetCode profile <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
-        </div>
+
+          <blockquote className="border-l-4 border-black dark:border-white pl-5 my-8 text-xl font-light italic text-gray-700 dark:text-gray-300 leading-relaxed">
+            "Every failed submission was a question I hadn't asked myself yet."
+          </blockquote>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+            I failed a lot. I still do. But I learned to sit with the discomfort of not knowing
+            instead of immediately Googling the answer. That patience — or stubbornness, depending
+            on who you ask — is probably the most useful skill I've built.
+          </p>
+        </section>
+
+        <Divider />
+
+        {/* ── Chapter 3: The Foundation ────────────────────────────────── */}
+        <section id="chapter-3">
+          <p className="text-xs font-mono text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3">
+            Chapter 03
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black mb-8 leading-tight">
+            The Foundation
+          </h2>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+            Solving problems is one thing. Understanding <em>why</em> the solution works is another.
+            GeeksforGeeks became my off-campus university. Trees, graphs, heaps, hashing — reading the
+            theory behind the patterns I was learning on LeetCode made everything click differently.
+          </p>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+            Computer science has history. Algorithms have inventors. There's a reason quicksort is
+            taught in every first-year course and it's not arbitrary. Learning <em>that</em>
+            history made me care about the craft in a different way — not just "does it pass?" but
+            "is this the right approach?"
+          </p>
+
+          <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-6 mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <SiGeeksforgeeks className="w-5 h-5 text-green-600" />
+              <span className="font-semibold text-sm">GeeksforGeeks</span>
+            </div>
+            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+              Data structures, algorithms, OS, DBMS, system design — built the CS fundamentals
+              that I still reach for in every technical conversation.
+            </p>
+            <div className="mt-4">
+              <a
+                href={links.geeksforgeeks}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm hover:underline text-gray-500 dark:text-gray-400"
+              >
+                View GFG profile <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+            Theory without practice becomes trivia fast. But practice without theory becomes
+            brittle. The combination — solving problems while understanding the science
+            underneath — is what I kept coming back to.
+          </p>
+        </section>
+
+        <Divider />
+
+        {/* ── Chapter 4: The Builder ───────────────────────────────────── */}
+        <section id="chapter-4">
+          <p className="text-xs font-mono text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3">
+            Chapter 04
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black mb-8 leading-tight">
+            The Builder
+          </h2>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+            At some point, problem-solving in isolation stopped being enough. I needed to make
+            things. Real things. Things other people could use. GitHub went from a place I'd heard
+            about to the place where ideas went to become software.
+          </p>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+            My first few repos were embarrassing. Copy-pasted tutorials with minor modifications.
+            But then I built something that actually worked — a project I was proud enough to show
+            people. The commit history tells the story of someone figuring it out in public,
+            one push at a time.
+          </p>
+
+          {/* GitHub stats callout */}
+          <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-6 mb-8">
+            <div className="flex items-center gap-2 mb-5">
+              <FaGithub className="w-5 h-5" />
+              <span className="font-semibold text-sm">GitHub</span>
+              {ghLive && <LiveBadge />}
+            </div>
+            <div className="grid grid-cols-3 gap-4 text-center">
+              {[
+                { label: "Public repos",   value: gh.repos },
+                { label: "Total stars",    value: gh.stars },
+                { label: "Followers",      value: gh.followers },
+              ].map(s => (
+                <div key={s.label}>
+                  <p className="text-2xl font-bold font-mono"><Num value={s.value} /></p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 pt-5 border-t border-gray-200 dark:border-white/10 flex flex-wrap gap-4">
+              <a
+                href={links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm hover:underline text-gray-500 dark:text-gray-400"
+              >
+                View profile <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              <a
+                href={links.githubRepos}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm hover:underline text-gray-500 dark:text-gray-400"
+              >
+                Browse repos <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+          <blockquote className="border-l-4 border-black dark:border-white pl-5 my-8 text-xl font-light italic text-gray-700 dark:text-gray-300 leading-relaxed">
+            "Open source taught me that code is a conversation, not a monologue."
+          </blockquote>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+            Someone opened an issue on one of my libraries from a company I'd never heard of.
+            They were using it in production. That message shifted something. I started writing
+            code like it mattered — because someone, somewhere, might actually read it.
+          </p>
+        </section>
+
+        <Divider />
+
+        {/* ── Chapter 5: What's Next ───────────────────────────────────── */}
+        <section id="chapter-5">
+          <p className="text-xs font-mono text-gray-400 dark:text-gray-500 tracking-widest uppercase mb-3">
+            Chapter 05
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-black mb-8 leading-tight">
+            Still Writing
+          </h2>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+            This story doesn't have an ending because it isn't finished. Every skill I've
+            built has revealed five more I don't have yet. Every project I've shipped has
+            generated ideas for the next one. The horizon keeps moving, and I've made peace
+            with that.
+          </p>
+
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+            The developer I am today would genuinely impress the person who first typed
+            that <code className="text-sm bg-gray-100 dark:bg-white/10 px-1.5 py-0.5 rounded font-mono">console.log</code>.
+            But I'm still that same person — curious, stubborn, and convinced that the next
+            thing I build will be the most interesting thing I've ever made.
+          </p>
+
+          <blockquote className="border-l-4 border-black dark:border-white pl-5 my-8 text-xl font-light italic text-gray-700 dark:text-gray-300 leading-relaxed">
+            "I'm still asking 'how does this work?' — just with better tools to find out."
+          </blockquote>
+        </section>
+
+        <Divider />
+
+        {/* ── CTA ────────────────────────────────────────────────────────── */}
+        <section id="contact" className="py-8 text-center space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-black">
+            Let's build something together.
+          </h2>
+          <p className="text-gray-500 dark:text-gray-400 leading-relaxed max-w-md mx-auto">
+            Whether you're hiring, collaborating, or just want to talk about an interesting
+            problem — my inbox is open.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center pt-2">
+            <a
+              href={links.contact}
+              className="px-8 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full font-semibold hover:scale-105 transition-transform text-sm"
+            >
+              Say hello
+            </a>
+            <a
+              href={links.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-3 rounded-full font-semibold border border-gray-200 dark:border-white/20 hover:border-gray-400 dark:hover:border-white/40 transition-all text-sm"
+            >
+              Read my résumé
+            </a>
+          </div>
+        </section>
+
       </div>
 
-      {/* Footer */}
-      <div className="relative py-12 px-4 sm:px-6 lg:px-8 border-t border-black/10 dark:border-white/10">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Built with curiosity, powered by passion, fueled by coffee ☕
-          </p>
-          <p className="text-gray-500 dark:text-gray-600 text-sm font-mono">
-            This story is still being written... Stay tuned for more chapters.
-          </p>
-        </div>
+      {/* ── Footer ───────────────────────────────────────────────────────── */}
+      <div className="border-t border-gray-100 dark:border-white/10 py-10 px-6 text-center">
+        <p className="text-sm text-gray-400 dark:text-gray-500">
+          Built with curiosity, powered by caffeine.
+          <span className="ml-2 font-mono text-xs">// story still in progress</span>
+        </p>
       </div>
     </div>
   );
