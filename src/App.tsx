@@ -4,6 +4,8 @@ import Home from "./Home/Home";
 import Story from "./Home/Story";
 import NotFound from "./pages/NotFound";
 import Uses from "./pages/Uses";
+import BlogList from "./pages/BlogList";
+import BlogPost from "./pages/BlogPost";
 import CommandPalette from "./components/CommandPalette";
 import TerminalMode from "./components/TerminalMode";
 import CursorTrail from "./components/CursorTrail";
@@ -49,6 +51,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/story" element={<Story />} />
         <Route path="/uses" element={<Uses />} />
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
 

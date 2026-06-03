@@ -53,3 +53,24 @@ html {
     opacity: 0;
   }
 }
+
+/* ── highlight.js dark-mode overrides ──────────────────────────────────────── */
+.dark .hljs {
+  background: transparent;
+  color: #abb2bf;
+}
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-built_in { color: #c678dd; }
+.dark .hljs-string,
+.dark .hljs-attr { color: #98c379; }
+.dark .hljs-number,
+.dark .hljs-literal { color: #d19a66; }
+.dark .hljs-comment { color: #5c6370; font-style: italic; }
+.dark .hljs-title,
+.dark .hljs-class .hljs-title { color: #61afef; }
+.dark .hljs-variable,
+.dark .hljs-template-variable { color: #e06c75; }
+.dark .hljs-type,
+.dark .hljs-params { color: #e5c07b; }
+/* ─────────────────────────────────────────────────────────────────────────── */

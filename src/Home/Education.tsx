@@ -21,10 +21,10 @@ const education: Degree[] = [
   {
     degree: "Bachelor of Technology",
     field: "Computer Science & Engineering",
-    institution: "Your University Name", // ← update
+    institution: "Aditya University", // ← update
     location: "India",
-    period: "2020 – 2024",
-    grade: "7.8 CGPA", // ← update
+    period: "2021 – 2025",
+    grade: "8.11 CGPA", // ← update
     description:
       "Focused on software engineering, algorithms, and data structures. Built multiple academic and personal projects alongside coursework.",
     courses: [
@@ -34,6 +34,7 @@ const education: Degree[] = [
       { name: "Computer Networks" },
       { name: "Software Engineering" },
       { name: "Object-Oriented Programming" },
+      { name: "Web Development" },
     ],
   },
 ];

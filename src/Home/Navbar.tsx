@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sun, Moon } from "lucide-react";
+import { Link } from "react-router-dom";
 import flower from "../assets/flower.svg";
 import { useTheme } from "../context/useTheme";
 
@@ -11,7 +12,7 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
-    { name: "Blog", to: "#blog" },
+    { name: "Blog", to: "/blog" },
     { name: "My Story", to: "/story" },
     { name: "Uses", to: "/uses" },
     { name: "Open Source", to: "#opensource" },
@@ -29,13 +30,23 @@ export default function Navbar() {
         <ul className="hidden md:flex space-x-8 items-center">
           {navItems.map(item => (
             <li key={item.to}>
-              <a
-                href={item.to}
-                onClick={() => setIsOpen(false)}
-                className="block text-black dark:text-white transition-all duration-200 transform hover:underline hover:translate-x-2 hover:scale-110"
-              >
-                {item.name}
-              </a>
+              {item.to.startsWith("/") ? (
+                <Link
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-black dark:text-white transition-all duration-200 transform hover:underline hover:translate-x-2 hover:scale-110"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <a
+                  href={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-black dark:text-white transition-all duration-200 transform hover:underline hover:translate-x-2 hover:scale-110"
+                >
+                  {item.name}
+                </a>
+              )}
             </li>
           ))}
           <li>
@@ -83,13 +94,23 @@ export default function Navbar() {
         <ul className="md:hidden fixed top-20 left-0 w-full bg-white dark:bg-dark-bg text-black dark:text-white z-[9999] shadow-md dark:shadow-white/5 py-4 px-10 space-y-4">
           {navItems.map(item => (
             <li key={item.to}>
-              <a
-                href={item.to}
-                onClick={() => setIsOpen(false)}
-                className="block text-black dark:text-white transition-all duration-200 transform hover:underline hover:translate-x-2 hover:scale-110"
-              >
-                {item.name}
-              </a>
+              {item.to.startsWith("/") ? (
+                <Link
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-black dark:text-white transition-all duration-200 transform hover:underline hover:translate-x-2 hover:scale-110"
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <a
+                  href={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="block text-black dark:text-white transition-all duration-200 transform hover:underline hover:translate-x-2 hover:scale-110"
+                >
+                  {item.name}
+                </a>
+              )}
             </li>
           ))}
         </ul>
