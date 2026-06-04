@@ -51,7 +51,7 @@ export default function Certifications() {
   return (
     <section
       id="certifications"
-      className="py-20 px-6 md:px-[10rem] bg-white dark:bg-dark-bg"
+      className="py-20 px-4 sm:px-6 bg-white dark:bg-dark-bg"
     >
       <AnimationTitle title="Certifications" />
       <p className="text-gray-500 dark:text-gray-400 mt-4 mb-10 text-center max-w-xl mx-auto">

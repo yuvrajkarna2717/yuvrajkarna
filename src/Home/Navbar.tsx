@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <nav
       id="home"
-      className="w-full md:px-[10rem] px-6 py-10 text-black dark:text-white"
+      className="w-full px-4 sm:px-6 py-6 sm:py-8 text-black dark:text-white"
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <img src={flower} alt="flower" className="w-10 h-10 dark:invert" />
@@ -91,7 +91,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <ul className="md:hidden fixed top-20 left-0 w-full bg-white dark:bg-dark-bg text-black dark:text-white z-[9999] shadow-md dark:shadow-white/5 py-4 px-10 space-y-4">
+        <ul className="md:hidden fixed top-16 sm:top-20 left-0 w-full bg-white dark:bg-dark-bg text-black dark:text-white z-[9999] shadow-md dark:shadow-white/5 py-4 px-6 space-y-4">
           {navItems.map(item => (
             <li key={item.to}>
               {item.to.startsWith("/") ? (

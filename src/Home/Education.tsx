@@ -44,7 +44,7 @@ export default function Education() {
   return (
     <section
       id="education"
-      className="py-20 px-6 md:px-[10rem] bg-gray-50 dark:bg-dark-bg"
+      className="py-20 px-4 sm:px-6 bg-gray-50 dark:bg-dark-bg"
     >
       <AnimationTitle title="Education" />
 

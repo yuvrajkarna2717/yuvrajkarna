@@ -7,10 +7,8 @@ import OpenSource from "./OpenSource";
 import Project from "./Project";
 import SkillsSlider from "./SkillsSlider";
 import StatsSection from "./StatsSection";
-import Timeline from "./Timeline";
 import Education from "./Education";
 import Certifications from "./Certifications";
-import NowSection from "./NowSection";
 import Blog from "./Blog";
 import BackToTop from "../components/BackToTop";
 
@@ -22,13 +20,13 @@ export default function Home() {
       <Hero />
       <SkillsSlider />
       <StatsSection />
-      <Timeline />
+      {/* <Timeline /> */}
       <OpenSource />
       <Experience />
       <Project />
       <Education />
       <Certifications />
-      <NowSection />
+      {/* <NowSection /> */}
       <Blog />
       <AboutMe />
       <Footer />

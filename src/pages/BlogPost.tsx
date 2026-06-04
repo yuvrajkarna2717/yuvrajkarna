@@ -33,7 +33,7 @@ export default function BlogPost() {
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white">
       {/* Top bar */}
-      <div className="w-full md:px-[10rem] px-6 py-8 flex items-center justify-between">
+      <div className="w-full px-4 sm:px-6 md:px-12 py-6 sm:py-8 flex items-center justify-between">
         <Link
           to="/blog"
           className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition"

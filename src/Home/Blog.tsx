@@ -8,7 +8,7 @@ const previewPosts = allBlogs.slice(0, 4);
 
 export default function Blog() {
   return (
-    <section id="blog" className="py-20 px-6 md:px-[10rem] bg-white dark:bg-dark-bg">
+    <section id="blog" className="py-20 px-4 sm:px-6 bg-white dark:bg-dark-bg">
       <AnimationTitle title="Blog" />
       <p className="text-gray-500 dark:text-gray-400 mt-4 mb-10 text-center max-w-xl mx-auto">
         Writing about things I've built, broken, and learned.

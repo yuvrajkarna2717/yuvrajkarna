@@ -178,7 +178,7 @@ export default function StatsSection() {
   return (
     <section
       id="stats"
-      className="py-20 px-6 md:px-[10rem] bg-white dark:bg-dark-bg"
+      className="py-20 px-4 sm:px-6 bg-white dark:bg-dark-bg"
     >
       <AnimationTitle title="By the Numbers" />
       <p className="text-gray-500 dark:text-gray-400 mt-4 mb-12 text-center max-w-xl mx-auto">
@@ -199,7 +199,7 @@ export default function StatsSection() {
             </span>
           )}
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard
             label="Public Repos"
             value={github?.repos ?? 0}
