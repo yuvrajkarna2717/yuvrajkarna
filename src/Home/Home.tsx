@@ -1,16 +1,25 @@
-import { AboutMe } from "./AboutMe";
-import Experience from "./Experience";
-import Footer from "./Footer";
+import { lazy, Suspense } from "react";
+// Above-the-fold — loaded eagerly
 import Hero from "./Hero";
 import Navbar from "./Navbar";
-import OpenSource from "./OpenSource";
-import Project from "./Project";
-import SkillsSlider from "./SkillsSlider";
-import StatsSection from "./StatsSection";
-import Education from "./Education";
-import Certifications from "./Certifications";
-import Blog from "./Blog";
-import BackToTop from "../components/BackToTop";
+
+// Below-the-fold — lazily loaded in a single deferred chunk
+const SkillsSlider = lazy(() => import("./SkillsSlider"));
+const StatsSection = lazy(() => import("./StatsSection"));
+const OpenSource = lazy(() => import("./OpenSource"));
+const Experience = lazy(() => import("./Experience"));
+const Project = lazy(() => import("./Project"));
+const Education = lazy(() => import("./Education"));
+const Certifications = lazy(() => import("./Certifications"));
+const Blog = lazy(() => import("./Blog"));
+const AboutMe = lazy(() => import("./AboutMe").then((m) => ({ default: m.AboutMe })));
+const Footer = lazy(() => import("./Footer"));
+const BackToTop = lazy(() => import("../components/BackToTop"));
+
+// Thin spacer shown while a section's chunk is loading (prevents layout jump)
+function SectionFallback() {
+  return <div className="h-24" />;
+}
 
 export default function Home() {
   return (
@@ -18,19 +27,19 @@ export default function Home() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] z-0 pointer-events-none" />
       <Navbar />
       <Hero />
-      <SkillsSlider />
-      <StatsSection />
-      {/* <Timeline /> */}
-      <OpenSource />
-      <Experience />
-      <Project />
-      <Education />
-      <Certifications />
-      {/* <NowSection /> */}
-      <Blog />
-      <AboutMe />
-      <Footer />
-      <BackToTop />
+      <Suspense fallback={<SectionFallback />}>
+        <SkillsSlider />
+        <StatsSection />
+        <OpenSource />
+        <Experience />
+        <Project />
+        <Education />
+        <Certifications />
+        <Blog />
+        <AboutMe />
+        <Footer />
+        <BackToTop />
+      </Suspense>
     </main>
   );
 }

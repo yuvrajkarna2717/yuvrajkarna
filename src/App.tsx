@@ -1,16 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./Home/Home";
-import Story from "./Home/Story";
-import NotFound from "./pages/NotFound";
-import Uses from "./pages/Uses";
-import BlogList from "./pages/BlogList";
-import BlogPost from "./pages/BlogPost";
 import CommandPalette from "./components/CommandPalette";
 import TerminalMode from "./components/TerminalMode";
 import CursorTrail from "./components/CursorTrail";
 import Confetti from "./components/Confetti";
 import { useKonami } from "./hooks/useKonami";
+
+// Route-level code splitting — each page is a separate chunk
+const Home = lazy(() => import("./Home/Home"));
+const Story = lazy(() => import("./Home/Story"));
+const Uses = lazy(() => import("./pages/Uses"));
+const BlogList = lazy(() => import("./pages/BlogList"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+function PageLoader() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+      <div className="w-5 h-5 border-2 border-gray-200 border-t-gray-800 dark:border-gray-700 dark:border-t-white rounded-full animate-spin" />
+    </div>
+  );
+}
 
 export default function App() {
   const [cmdOpen, setCmdOpen] = useState(false);
@@ -47,14 +57,16 @@ export default function App() {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/story" element={<Story />} />
-        <Route path="/uses" element={<Uses />} />
-        <Route path="/blog" element={<BlogList />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/story" element={<Story />} />
+          <Route path="/uses" element={<Uses />} />
+          <Route path="/blog" element={<BlogList />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
 
       <CursorTrail />
       <CommandPalette isOpen={cmdOpen} onClose={() => setCmdOpen(false)} />
