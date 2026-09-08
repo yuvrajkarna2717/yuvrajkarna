@@ -101,6 +101,7 @@ function getCachedLeetCode(): LeetCodeData | null {
       timestamp: number;
     };
     if (Date.now() - timestamp > CACHE_TTL_MS) return null; // expired
+    if (!data || data.total === 0) return null; // ignore bad/zeroed cache
     return data;
   } catch {
     return null;
@@ -120,7 +121,7 @@ function setCachedLeetCode(data: LeetCodeData) {
 
 async function fetchLeetCodeStats(): Promise<LeetCodeData> {
   const res = await fetch(
-    "https://leetcode-stats-worker.yuvrajkarna.workers.dev/?username=yuvrajkarna27"
+    "https://leetcode-stats-worker.yuvrajkarna.workers.dev/?username=yuvrajkarna"
   );
   const json = await res.json();
   const nums: { difficulty: string; count: number }[] =
@@ -129,12 +130,20 @@ async function fetchLeetCodeStats(): Promise<LeetCodeData> {
   const get = (diff: string) =>
     nums.find(n => n.difficulty === diff)?.count ?? 0;
 
-  return {
+  const data: LeetCodeData = {
     total: get("All"),
     easy: get("Easy"),
     medium: get("Medium"),
     hard: get("Hard"),
   };
+
+  // If the user wasn't matched (or the API returned nothing), all counts are 0.
+  // Treat that as a failed fetch so we keep the fallback and don't cache zeros.
+  if (data.total === 0) {
+    throw new Error("LeetCode returned no data");
+  }
+
+  return data;
 }
 
 export default function StatsSection() {
@@ -162,16 +171,26 @@ export default function StatsSection() {
     }
 
     // ── GitHub (via worker) ───────────────────────────────────────────────
+    const GITHUB_FALLBACK: GitHubData = { repos: 30, followers: 50, stars: 25 };
     fetch(
       "https://leetcode-stats-worker.yuvrajkarna.workers.dev/github?username=yuvrajkarna2717"
     )
-      .then(r => r.json())
+      .then(r => {
+        if (!r.ok) throw new Error(`GitHub worker error ${r.status}`);
+        return r.json();
+      })
       .then((data: GitHubData) => {
+        // A zeroed-out response means the worker's GitHub call failed
+        // (e.g. rate limit). Treat it as an error and show the fallback.
+        if (!data || (data.repos === 0 && data.followers === 0 && data.stars === 0)) {
+          setGithub(GITHUB_FALLBACK);
+          return;
+        }
         setGithub(data);
         setGithubLive(true);
       })
       .catch(() => {
-        setGithub({ repos: 30, followers: 50, stars: 25 });
+        setGithub(GITHUB_FALLBACK);
       });
   }, []);
 

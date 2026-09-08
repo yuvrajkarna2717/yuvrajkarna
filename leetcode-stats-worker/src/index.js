@@ -37,17 +37,41 @@ async function handleLeetCode(url) {
   });
 }
 
-async function handleGitHub(url) {
+async function handleGitHub(url, env) {
   const username = url.searchParams.get("username") || "yuvrajkarna2717";
 
+  // Authenticate when a token is available to raise GitHub's rate limit from
+  // 60 req/hour (unauthenticated) to 5000 req/hour.
+  const ghHeaders = {
+    "User-Agent": "portfolio-worker",
+    Accept: "application/vnd.github+json",
+  };
+  if (env && env.GITHUB_TOKEN) {
+    ghHeaders.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+  }
+
   const [userRes, reposRes] = await Promise.all([
-    fetch(`https://api.github.com/users/${username}`, {
-      headers: { "User-Agent": "portfolio-worker" },
-    }),
+    fetch(`https://api.github.com/users/${username}`, { headers: ghHeaders }),
     fetch(`https://api.github.com/users/${username}/repos?per_page=100`, {
-      headers: { "User-Agent": "portfolio-worker" },
+      headers: ghHeaders,
     }),
   ]);
+
+  // If GitHub rejects us (rate limit / error), surface a real error so the
+  // client falls back instead of silently rendering zeros.
+  if (!userRes.ok || !reposRes.ok) {
+    return new Response(
+      JSON.stringify({
+        error: "github_api_error",
+        userStatus: userRes.status,
+        reposStatus: reposRes.status,
+      }),
+      {
+        status: 502,
+        headers: { "Content-Type": "application/json", ...corsHeaders() },
+      }
+    );
+  }
 
   const [user, repos] = await Promise.all([userRes.json(), reposRes.json()]);
 
@@ -61,12 +85,20 @@ async function handleGitHub(url) {
       followers: user.followers ?? 0,
       stars,
     }),
-    { headers: { "Content-Type": "application/json", ...corsHeaders() } }
+    {
+      headers: {
+        "Content-Type": "application/json",
+        // Cache at the edge for 1 hour so repeat visitors don't burn the
+        // GitHub rate limit.
+        "Cache-Control": "public, max-age=3600",
+        ...corsHeaders(),
+      },
+    }
   );
 }
 
 export default {
-  async fetch(request) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     // CORS preflight
@@ -77,7 +109,18 @@ export default {
     const pathname = url.pathname;
 
     if (pathname === "/github") {
-      return handleGitHub(url);
+      // Serve from the edge cache when possible to protect the GitHub rate limit.
+      const cache = caches.default;
+      const cacheKey = new Request(url.toString(), request);
+      const cached = await cache.match(cacheKey);
+      if (cached) return cached;
+
+      const response = await handleGitHub(url, env);
+      // Only cache successful responses so a transient error isn't pinned for an hour.
+      if (response.status === 200 && ctx) {
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+      }
+      return response;
     }
 
     // Default: / or /leetcode → LeetCode stats
