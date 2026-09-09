@@ -20,7 +20,10 @@ export default function Footer() {
         <SiHappycow className="w-6 h-6 transition-all duration-300 group-hover:scale-125 group-hover:rotate-6 group-hover:translate-x-2 group-hover:-translate-y-2" />
       </div>
       <div className="mt-3 flex items-center justify-center gap-4 text-sm text-gray-400 dark:text-gray-500">
-        <Link to="/uses" className="hover:text-black dark:hover:text-white transition">
+        <Link
+          to="/uses"
+          className="hover:text-black dark:hover:text-white transition"
+        >
           Uses
         </Link>
         <span>·</span>
@@ -41,10 +44,16 @@ export default function Footer() {
         </a>
       </div>
       <p className="mt-2 text-xs text-gray-300 dark:text-gray-600">
-        Press <kbd className="border border-gray-300 dark:border-gray-600 rounded px-1">Ctrl+K</kbd> for command palette ·{" "}
-        <kbd className="border border-gray-300 dark:border-gray-600 rounded px-1">`</kbd> for terminal
+        Press{" "}
+        <kbd className="border border-gray-300 dark:border-gray-600 rounded px-1">
+          Ctrl+K
+        </kbd>{" "}
+        for command palette ·{" "}
+        <kbd className="border border-gray-300 dark:border-gray-600 rounded px-1">
+          `
+        </kbd>{" "}
+        for terminal
       </p>
     </footer>
   );
 }
-

@@ -182,7 +182,10 @@ export default function StatsSection() {
       .then((data: GitHubData) => {
         // A zeroed-out response means the worker's GitHub call failed
         // (e.g. rate limit). Treat it as an error and show the fallback.
-        if (!data || (data.repos === 0 && data.followers === 0 && data.stars === 0)) {
+        if (
+          !data ||
+          (data.repos === 0 && data.followers === 0 && data.stars === 0)
+        ) {
           setGithub(GITHUB_FALLBACK);
           return;
         }
@@ -195,10 +198,7 @@ export default function StatsSection() {
   }, []);
 
   return (
-    <section
-      id="stats"
-      className="py-20 px-4 sm:px-6 bg-white dark:bg-dark-bg"
-    >
+    <section id="stats" className="py-20 px-4 sm:px-6 bg-white dark:bg-dark-bg">
       <AnimationTitle title="By the Numbers" />
       <p className="text-gray-500 dark:text-gray-400 mt-4 mb-12 text-center max-w-xl mx-auto">
         Metrics that tell the story better than words.

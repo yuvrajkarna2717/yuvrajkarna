@@ -37,7 +37,9 @@ export default function Blog() {
                     </span>
                   ))}
                 </div>
-                <span className="whitespace-nowrap hidden md:inline">{post.date}</span>
+                <span className="whitespace-nowrap hidden md:inline">
+                  {post.date}
+                </span>
                 <span className="whitespace-nowrap">{post.readTime}</span>
                 <span className="text-black dark:text-white group-hover:translate-x-0.5 transition-transform duration-150">
                   →
