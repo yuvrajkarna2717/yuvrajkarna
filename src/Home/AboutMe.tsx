@@ -124,8 +124,8 @@ export function AboutMe() {
               .
             </p>
             <p>
-              I work across the full stack — React on the front, Python, Node.js &
-              Redis on the back, and everything in between. I'm currently
+              I work across the full stack — React on the front, Python, Node.js
+              & Redis on the back, and everything in between. I'm currently
               building real-time AI products at{" "}
               <span className="text-black dark:text-white font-medium">
                 Iquadra
@@ -141,7 +141,7 @@ export function AboutMe() {
 
             {/* Interest tags */}
             <div className="pt-2 flex flex-wrap gap-2">
-              {INTERESTS.map((tag) => (
+              {INTERESTS.map(tag => (
                 <span
                   key={tag}
                   className="text-xs px-3 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10"

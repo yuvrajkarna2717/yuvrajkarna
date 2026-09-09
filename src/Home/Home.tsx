@@ -12,7 +12,9 @@ const Project = lazy(() => import("./Project"));
 const Education = lazy(() => import("./Education"));
 const Certifications = lazy(() => import("./Certifications"));
 const Blog = lazy(() => import("./Blog"));
-const AboutMe = lazy(() => import("./AboutMe").then((m) => ({ default: m.AboutMe })));
+const AboutMe = lazy(() =>
+  import("./AboutMe").then(m => ({ default: m.AboutMe }))
+);
 const Footer = lazy(() => import("./Footer"));
 const BackToTop = lazy(() => import("../components/BackToTop"));
 
@@ -43,4 +45,3 @@ export default function Home() {
     </main>
   );
 }
-

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Search } from "lucide-react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 interface CommandItem {
   id: string;
@@ -32,9 +33,7 @@ const allCommands: CommandItem[] = [
     icon: "🛠",
     description: "Tech skills & tools",
     action: () =>
-      document
-        .getElementById("skills")
-        ?.scrollIntoView({ behavior: "smooth" }),
+      document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" }),
   },
   {
     id: "stats",
@@ -150,8 +149,7 @@ const allCommands: CommandItem[] = [
     label: "LinkedIn",
     icon: "💼",
     description: "Connect professionally",
-    action: () =>
-      window.open("https://linkedin.com/in/yuvrajkarna", "_blank"),
+    action: () => window.open("https://linkedin.com/in/yuvrajkarna", "_blank"),
   },
   {
     id: "resume",
@@ -180,6 +178,7 @@ export default function CommandPalette({ isOpen, onClose }: Props) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   const filtered = query
     ? allCommands.filter(
@@ -220,11 +219,19 @@ export default function CommandPalette({ isOpen, onClose }: Props) {
   if (!isOpen) return null;
 
   return createPortal(
+    // Backdrop click dismisses; Escape also closes (see keydown effect above).
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
     <div
       className="fixed inset-0 z-[9999] flex items-start justify-center pt-[18vh] bg-black/40 backdrop-blur-sm"
       onClick={onClose}
     >
+      {/* Panel stops backdrop clicks from closing the palette. */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
         className="w-full max-w-xl mx-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
@@ -244,14 +251,18 @@ export default function CommandPalette({ isOpen, onClose }: Props) {
         </div>
 
         {/* Results */}
-        <ul className="max-h-72 overflow-y-auto py-2">
+        <ul
+          role="listbox"
+          aria-label="Commands"
+          className="max-h-72 overflow-y-auto py-2"
+        >
           {filtered.length === 0 ? (
             <li className="px-4 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
               No results for &ldquo;{query}&rdquo;
             </li>
           ) : (
             filtered.map((cmd, i) => (
-              <li key={cmd.id}>
+              <li key={cmd.id} role="option" aria-selected={i === selected}>
                 <button
                   className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors ${
                     i === selected
@@ -264,7 +275,9 @@ export default function CommandPalette({ isOpen, onClose }: Props) {
                     onClose();
                   }}
                 >
-                  <span className="text-base flex-shrink-0">{cmd.icon}</span>
+                  <span aria-hidden="true" className="text-base flex-shrink-0">
+                    {cmd.icon}
+                  </span>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-black dark:text-white">
                       {cmd.label}

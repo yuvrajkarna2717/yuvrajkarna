@@ -3,32 +3,66 @@ import { Link, useParams, Navigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { Sun, Moon } from "lucide-react";
 import { useTheme } from "../context/useTheme";
-import { getBlogBySlug } from "../lib/blogUtils";
+import ThemeToggle from "../components/ThemeToggle";
+import { getBlogBySlug, type BlogPost as BlogPostType } from "../lib/blogUtils";
+import { usePageMeta } from "../lib/usePageMeta";
 import "highlight.js/styles/github.css";
-
-// We conditionally import the dark theme via CSS custom properties instead
-// of swapping stylesheet imports (avoids flash on theme change).
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const { theme, toggleTheme } = useTheme();
-
   const post = slug ? getBlogBySlug(slug) : undefined;
+  const isExternal = Boolean(post?.external && post?.externalUrl);
 
   // Scroll to top on mount / slug change
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [slug]);
 
+  // External posts should never be rendered here – redirect out (as a side
+  // effect, never during render).
+  useEffect(() => {
+    if (isExternal && post?.externalUrl) {
+      window.location.href = post.externalUrl;
+    }
+  }, [isExternal, post?.externalUrl]);
+
   if (!post) return <Navigate to="/blog" replace />;
 
-  // External posts should never be rendered here – redirect out
-  if (post.external && post.externalUrl) {
-    window.location.href = post.externalUrl;
-    return null;
-  }
+  // While the external redirect effect runs, render nothing.
+  if (isExternal) return null;
+
+  return <BlogArticle post={post} />;
+}
+
+function BlogArticle({ post }: { post: BlogPostType }) {
+  const { theme } = useTheme();
+
+  usePageMeta({
+    title: post.title,
+    description: post.summary,
+    path: `/blog/${post.slug}`,
+    type: "article",
+  });
+
+  // Article structured data for richer search results.
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.summary,
+      author: { "@type": "Person", name: "Yuvraj Karna" },
+      keywords: post.tags.join(", "),
+      datePublished: post.date,
+    });
+    document.head.appendChild(script);
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [post]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white">
@@ -40,13 +74,7 @@ export default function BlogPost() {
         >
           ← All posts
         </Link>
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="p-2 rounded-full border border-black/20 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/10 transition-all"
-        >
-          {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        <ThemeToggle />
       </div>
 
       {/* Article */}
@@ -64,7 +92,9 @@ export default function BlogPost() {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3">{post.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3">
+          {post.title}
+        </h1>
 
         {/* Meta */}
         <div className="flex items-center gap-3 text-sm text-gray-400 dark:text-gray-500 mb-10">
@@ -95,7 +125,10 @@ export default function BlogPost() {
             ${theme === "dark" ? "prose-invert" : ""}
           `}
         >
-          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+          >
             {post.content}
           </ReactMarkdown>
         </div>

@@ -80,7 +80,9 @@ const OpenSource: React.FC = () => {
         </span>
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-black dark:bg-white shrink-0" />
-          <span className="text-xs text-gray-500 dark:text-gray-400">{contribution.language}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {contribution.language}
+          </span>
         </div>
         <a
           href={contribution.url}
@@ -96,7 +98,6 @@ const OpenSource: React.FC = () => {
 
   return (
     <div id="opensource" className="w-full min-h-3.5">
-
       <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-6 sm:mb-8">
         <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2 text-black dark:text-white">
           Open Source Contributions

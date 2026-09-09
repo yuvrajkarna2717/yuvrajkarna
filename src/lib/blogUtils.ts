@@ -17,7 +17,10 @@ export interface BlogPost extends BlogMeta {
 // ---------------------------------------------------------------------------
 // Simple frontmatter parser (no Node-only deps)
 // ---------------------------------------------------------------------------
-function parseFrontmatter(raw: string): { meta: Record<string, unknown>; content: string } {
+function parseFrontmatter(raw: string): {
+  meta: Record<string, unknown>;
+  content: string;
+} {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) return { meta: {}, content: raw };
 
@@ -80,8 +83,13 @@ export const allBlogs: BlogPost[] = Object.entries(rawFiles)
     };
   })
   .sort((a, b) => {
-    // Sort by date descending (simple string compare works for "MMM YYYY")
-    return new Date(b.date) > new Date(a.date) ? 1 : -1;
+    // Sort by date descending. Falls back to 0 for unparseable/equal dates so
+    // the sort is stable instead of arbitrarily flipping equal entries.
+    const ta = new Date(a.date).getTime();
+    const tb = new Date(b.date).getTime();
+    const va = Number.isNaN(ta) ? 0 : ta;
+    const vb = Number.isNaN(tb) ? 0 : tb;
+    return vb - va;
   });
 
 export function getBlogBySlug(slug: string): BlogPost | undefined {

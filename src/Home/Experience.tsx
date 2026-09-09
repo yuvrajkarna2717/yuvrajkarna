@@ -33,14 +33,14 @@ interface Product {
 
 // ── Tech icon map ──────────────────────────────────────────────────────────────
 const techIconMap: Record<string, React.ReactNode> = {
-  react:    <SiReact className="w-3 h-3" />,
-  redux:    <SiRedux className="w-3 h-3" />,
-  bootstrap:<SiBootstrap className="w-3 h-3" />,
-  node:     <SiNodedotjs className="w-3 h-3" />,
-  mongo:    <SiMongodb className="w-3 h-3" />,
+  react: <SiReact className="w-3 h-3" />,
+  redux: <SiRedux className="w-3 h-3" />,
+  bootstrap: <SiBootstrap className="w-3 h-3" />,
+  node: <SiNodedotjs className="w-3 h-3" />,
+  mongo: <SiMongodb className="w-3 h-3" />,
   tailwind: <SiTailwindcss className="w-3 h-3" />,
-  socket:   <SiSocketdotio className="w-3 h-3" />,
-  redis:    <SiRedis className="w-3 h-3" />,
+  socket: <SiSocketdotio className="w-3 h-3" />,
+  redis: <SiRedis className="w-3 h-3" />,
 };
 
 function getTechIcon(tech: string): React.ReactNode | null {
@@ -150,7 +150,9 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
           <span className="text-xs font-mono text-gray-400 dark:text-gray-500 shrink-0">
             0{index + 1}
           </span>
-          <h4 className="font-bold text-base leading-tight truncate">{product.name}</h4>
+          <h4 className="font-bold text-base leading-tight truncate">
+            {product.name}
+          </h4>
           {/* Status indicator */}
           <span
             className={`shrink-0 inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -187,9 +189,13 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
 
       {/* ── Role + duration ──────────────────────────────────────────────── */}
       <div className="flex items-center gap-2 mb-4 pl-7">
-        <span className="text-sm text-gray-500 dark:text-gray-400">{product.role}</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          {product.role}
+        </span>
         <span className="text-gray-300 dark:text-gray-600">·</span>
-        <span className="text-xs text-gray-400 dark:text-gray-500">{product.duration}</span>
+        <span className="text-xs text-gray-400 dark:text-gray-500">
+          {product.duration}
+        </span>
       </div>
 
       {/* ── Description ─────────────────────────────────────────────────── */}
@@ -225,7 +231,11 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
           stroke="currentColor"
           strokeWidth={2.5}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
         {expanded ? "Hide highlights" : "Show highlights"}
       </button>
@@ -237,7 +247,10 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
       >
         <ul className="mt-3 space-y-2 pl-4 border-l-2 border-gray-200 dark:border-white/10">
           {product.highlights.map((h, i) => (
-            <li key={i} className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+            <li
+              key={i}
+              className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed"
+            >
               {h}
             </li>
           ))}
@@ -248,15 +261,21 @@ const ProductCard: React.FC<{ product: Product; index: number }> = ({
 };
 
 // ── ExperienceCard ────────────────────────────────────────────────────────────
-const ExperienceCard: React.FC<{ experience: Experience }> = ({ experience }) => {
+const ExperienceCard: React.FC<{ experience: Experience }> = ({
+  experience,
+}) => {
   return (
     <div>
       {/* Company header */}
       <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg sm:text-xl font-bold mb-0.5">{experience.company}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{experience.position}</p>
+            <h3 className="text-lg sm:text-xl font-bold mb-0.5">
+              {experience.company}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {experience.position}
+            </p>
           </div>
           <div className="flex items-center gap-3 sm:text-right shrink-0">
             <span className="text-xs font-mono text-gray-500 dark:text-gray-400 bg-white dark:bg-white/10 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 whitespace-nowrap">

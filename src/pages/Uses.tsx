@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { Sun, Moon } from "lucide-react";
-import { useTheme } from "../context/useTheme";
+import ThemeToggle from "../components/ThemeToggle";
 import AnimationTitle from "../Home/AnimationTitle";
+import { usePageMeta } from "../lib/usePageMeta";
 
 interface UseItem {
   name: string;
@@ -39,8 +39,7 @@ const usesData: UseCategory[] = [
     items: [
       {
         name: "Git Bash",
-        description:
-          "Default terminal on Windows for Unix-like commands.",
+        description: "Default terminal on Windows for Unix-like commands.",
         url: "https://git-scm.com",
       },
       {
@@ -128,15 +127,19 @@ const usesData: UseCategory[] = [
       },
       {
         name: "External Monitor",
-        description:
-          "Extra screen real estate for multi-window dev workflows.",
+        description: "Extra screen real estate for multi-window dev workflows.",
       },
     ],
   },
 ];
 
 export default function Uses() {
-  const { theme, toggleTheme } = useTheme();
+  usePageMeta({
+    title: "Uses",
+    description:
+      "The tools, software, and hardware Yuvraj Karna uses day-to-day for development.",
+    path: "/uses",
+  });
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white">
@@ -148,17 +151,7 @@ export default function Uses() {
         >
           ← Back home
         </Link>
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="p-2 rounded-full border border-black/20 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/10 transition-all"
-        >
-          {theme === "dark" ? (
-            <Sun className="w-5 h-5" />
-          ) : (
-            <Moon className="w-5 h-5" />
-          )}
-        </button>
+        <ThemeToggle />
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pb-20">
@@ -171,7 +164,7 @@ export default function Uses() {
           {usesData.map(cat => (
             <section key={cat.category}>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <span>{cat.emoji}</span>
+                <span aria-hidden="true">{cat.emoji}</span>
                 <span>{cat.category}</span>
               </h2>
               <div className="space-y-3">

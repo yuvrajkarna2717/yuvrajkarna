@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 const COMMANDS: Record<string, string> = {
   help: `Available commands:
@@ -64,6 +65,7 @@ export default function TerminalMode({ isOpen, onClose }: Props) {
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   useEffect(() => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 10);
@@ -126,7 +128,13 @@ export default function TerminalMode({ isOpen, onClose }: Props) {
 
   return createPortal(
     <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl bg-gray-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden font-mono text-sm">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Terminal"
+        className="w-full max-w-2xl bg-gray-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden font-mono text-sm"
+      >
         {/* Title bar */}
         <div className="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/10">
           <button

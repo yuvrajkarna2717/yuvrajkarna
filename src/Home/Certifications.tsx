@@ -72,6 +72,10 @@ export default function Certifications() {
               <img
                 src={cert.imageUrl}
                 alt={`${cert.name} badge`}
+                width={64}
+                height={64}
+                loading="lazy"
+                decoding="async"
                 className="w-16 h-16 object-contain rounded-lg"
                 onError={e => {
                   (e.target as HTMLImageElement).style.display = "none";

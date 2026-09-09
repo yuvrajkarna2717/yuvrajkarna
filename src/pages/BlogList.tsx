@@ -1,21 +1,33 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Sun, Moon, ArrowUpRight } from "lucide-react";
-import { useTheme } from "../context/useTheme";
+import { ArrowUpRight } from "lucide-react";
+import ThemeToggle from "../components/ThemeToggle";
 import AnimationTitle from "../Home/AnimationTitle";
 import { allBlogs } from "../lib/blogUtils";
+import { usePageMeta } from "../lib/usePageMeta";
 
 const ALL_TAGS = "All";
 
 export default function BlogList() {
-  const { theme, toggleTheme } = useTheme();
   const [activeTag, setActiveTag] = useState(ALL_TAGS);
 
+  usePageMeta({
+    title: "Blog",
+    description:
+      "Writing about things I've built, broken, and learned — web development, React, backend, and more.",
+    path: "/blog",
+  });
+
   // Collect unique tags across all posts
-  const tags = [ALL_TAGS, ...Array.from(new Set(allBlogs.flatMap(b => b.tags)))];
+  const tags = [
+    ALL_TAGS,
+    ...Array.from(new Set(allBlogs.flatMap(b => b.tags))),
+  ];
 
   const filtered =
-    activeTag === ALL_TAGS ? allBlogs : allBlogs.filter(b => b.tags.includes(activeTag));
+    activeTag === ALL_TAGS
+      ? allBlogs
+      : allBlogs.filter(b => b.tags.includes(activeTag));
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white">
@@ -27,13 +39,7 @@ export default function BlogList() {
         >
           ← Back home
         </Link>
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="p-2 rounded-full border border-black/20 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/10 transition-all"
-        >
-          {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        <ThemeToggle />
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pb-24">
@@ -99,7 +105,9 @@ export default function BlogList() {
                   {isExternal && (
                     <>
                       <span>·</span>
-                      <span className="text-gray-400 dark:text-gray-500">External</span>
+                      <span className="text-gray-400 dark:text-gray-500">
+                        External
+                      </span>
                     </>
                   )}
                   <span className="ml-auto text-black dark:text-white group-hover:translate-x-1 transition-transform duration-200">
