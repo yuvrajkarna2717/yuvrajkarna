@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { usePrefersReducedMotion } from "../hooks/useMediaQuery";
 
 const COLORS = [
   "#ff0000",
@@ -15,10 +16,15 @@ interface Props {
 }
 
 export default function Confetti({ onDone }: Props) {
+  const reducedMotion = usePrefersReducedMotion();
+
   useEffect(() => {
-    const timer = setTimeout(onDone, 4000);
+    // Honor reduced-motion: skip the animation and finish immediately.
+    const timer = setTimeout(onDone, reducedMotion ? 0 : 4000);
     return () => clearTimeout(timer);
-  }, [onDone]);
+  }, [onDone, reducedMotion]);
+
+  if (reducedMotion) return null;
 
   const particles = Array.from({ length: 80 }, (_, i) => ({
     id: i,
@@ -31,7 +37,10 @@ export default function Confetti({ onDone }: Props) {
   }));
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+    <div
+      aria-hidden="true"
+      className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden"
+    >
       {particles.map(p => (
         <div
           key={p.id}

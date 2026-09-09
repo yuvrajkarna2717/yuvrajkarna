@@ -139,8 +139,17 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
     <>
       {/* ── Row ──────────────────────────────────────────────────────────── */}
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={`View details for ${project.title}`}
         className="py-4 -mx-2 px-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group"
         onClick={() => setShowModal(true)}
+        onKeyDown={e => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setShowModal(true);
+          }
+        }}
       >
         {/* Top line: status · title · category · links */}
         <div className="flex items-center justify-between gap-4 mb-1.5">
@@ -162,6 +171,9 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
               </span>
             )}
           </div>
+          {/* Wrapper only stops the row's click from bubbling; the interactive
+              children (links/button) carry their own semantics. */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
           <div
             className="flex items-center gap-3 shrink-0"
             onClick={e => e.stopPropagation()}
@@ -223,11 +235,18 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
 
       {/* ── Modal ────────────────────────────────────────────────────────── */}
       {showModal && (
+        // Backdrop click dismisses; Escape also closes (see effect above).
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
           onClick={() => setShowModal(false)}
         >
+          {/* Panel stops backdrop clicks from closing the modal. */}
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */}
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${project.title} details`}
             className="bg-white dark:bg-dark-bg w-full sm:rounded-2xl sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl rounded-t-2xl"
             onClick={e => e.stopPropagation()}
           >
@@ -249,7 +268,9 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                           : "bg-blue-500 animate-pulse"
                       }`}
                     />
-                    {project.status === "completed" ? "Completed" : "In development"}
+                    {project.status === "completed"
+                      ? "Completed"
+                      : "In development"}
                   </span>
                   <span className="text-gray-300 dark:text-gray-600">·</span>
                   <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
@@ -257,7 +278,9 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                   </span>
                   {project.users && (
                     <>
-                      <span className="text-gray-300 dark:text-gray-600">·</span>
+                      <span className="text-gray-300 dark:text-gray-600">
+                        ·
+                      </span>
                       <span className="text-xs text-gray-500 dark:text-gray-400">
                         {project.users} users
                       </span>
@@ -359,7 +382,8 @@ export default function Project() {
       <div className="max-w-4xl mx-auto px-6">
         <AnimationTitle title="Projects" />
         <p className="text-gray-500 dark:text-gray-400 mt-4 mb-10 text-center max-w-xl mx-auto">
-          A selection of things I've built — from open-source tools to full-stack products.
+          A selection of things I've built — from open-source tools to
+          full-stack products.
         </p>
         <div className="divide-y divide-gray-100 dark:divide-white/10">
           {projects.map((project, index) => (

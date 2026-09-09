@@ -2,12 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="./src/assets/flower.svg"
-    />
+    <link rel="icon" type="image/svg+xml" href="./src/assets/flower.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Set theme before first paint to avoid a flash of the wrong theme. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored || (prefersDark ? "dark" : "light");
+          if (theme === "dark") document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
     <meta
       name="google-site-verification"
       content="qyv6qsrzGPlAuPvH7I0w0WPYHbtj5RqEoyO11v40Y_Y"

@@ -4,6 +4,7 @@ import CommandPalette from "./components/CommandPalette";
 import TerminalMode from "./components/TerminalMode";
 import CursorTrail from "./components/CursorTrail";
 import Confetti from "./components/Confetti";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { useKonami } from "./hooks/useKonami";
 
 // Route-level code splitting — each page is a separate chunk
@@ -57,16 +58,18 @@ export default function App() {
 
   return (
     <>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/story" element={<Story />} />
-          <Route path="/uses" element={<Uses />} />
-          <Route path="/blog" element={<BlogList />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/story" element={<Story />} />
+            <Route path="/uses" element={<Uses />} />
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
 
       <CursorTrail />
       <CommandPalette isOpen={cmdOpen} onClose={() => setCmdOpen(false)} />

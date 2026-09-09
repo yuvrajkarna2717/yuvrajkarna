@@ -1,25 +1,19 @@
 import { Link } from "react-router-dom";
-import { Sun, Moon } from "lucide-react";
-import { useTheme } from "../context/useTheme";
+import ThemeToggle from "../components/ThemeToggle";
+import { usePageMeta } from "../lib/usePageMeta";
 
 export default function NotFound() {
-  const { theme, toggleTheme } = useTheme();
+  usePageMeta({
+    title: "404 — Page Not Found",
+    description: "The page you're looking for doesn't exist.",
+    path: "/404",
+  });
 
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg text-black dark:text-white flex flex-col">
       {/* Top bar */}
       <div className="flex justify-end p-6">
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="p-2 rounded-full border border-black/20 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/10 transition-all"
-        >
-          {theme === "dark" ? (
-            <Sun className="w-5 h-5" />
-          ) : (
-            <Moon className="w-5 h-5" />
-          )}
-        </button>
+        <ThemeToggle />
       </div>
 
       {/* Main content */}

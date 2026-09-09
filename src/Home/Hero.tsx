@@ -8,7 +8,6 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { BsArrowDown } from "react-icons/bs";
-import { Link } from "react-router-dom";
 import { SiHappycow } from "react-icons/si";
 import yuvrajDark from "../assets/yuvraj_karna_dark.png";
 import yuvrajWhite from "../assets/yuvraj_karna_white.png";
@@ -137,25 +136,25 @@ export default function Hero() {
 
           {/* Action buttons */}
           <div className="flex justify-between gap-3r-r-10">
-            <button className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition flex items-center gap-2 text-sm md:text-base">
-              <FaEnvelope className="flex-shrink-0" />
-              <a href="mailto:yuvrajkarna.code@gmail.com" className="break-all">
-                <span className="hidden sm:inline">
-                  yuvrajkarna.code@gmail.com
-                </span>
-                <span className="sm:hidden">Contact Me</span>
-              </a>
-            </button>
+            <a
+              href="mailto:yuvrajkarna.code@gmail.com"
+              className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition flex items-center gap-2 text-sm md:text-base break-all"
+            >
+              <FaEnvelope className="flex-shrink-0" aria-hidden="true" />
+              <span className="hidden sm:inline">
+                yuvrajkarna.code@gmail.com
+              </span>
+              <span className="sm:hidden">Contact Me</span>
+            </a>
 
-            <button className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition">
-              <a
-                href="/resume/YuvrajKarna.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Resume
-              </a>
-            </button>
+            <a
+              href="/resume/YuvrajKarna.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-black dark:bg-white text-white dark:text-black px-6 py-2 rounded-full hover:bg-gray-800 dark:hover:bg-gray-200 transition"
+            >
+              Resume
+            </a>
           </div>
         </div>
 
@@ -164,6 +163,10 @@ export default function Hero() {
           <img
             src={yuvrajPhoto}
             alt="Yuvraj Karna"
+            width={320}
+            height={460}
+            fetchPriority="high"
+            decoding="async"
             className="w-56 h-72 md:w-64 md:h-80 lg:w-80 lg:h-[460px] object-cover object-top select-none pointer-events-none"
             style={{
               maskImage:
@@ -177,12 +180,12 @@ export default function Hero() {
 
       {/* ── Scroll indicator ─────────────────────────────────────────────── */}
       <div className="pb-8 flex flex-col items-center gap-2">
-        <Link
-          to="/about"
+        <a
+          href="#about"
           className="text-black dark:text-white text-sm hover:underline"
         >
           See more about me
-        </Link>
+        </a>
         <BsArrowDown className="animate-arrow-bounce text-2xl text-black dark:text-white" />
       </div>
     </section>

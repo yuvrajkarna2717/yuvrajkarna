@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset 
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://yuvrajkarna.pages.dev/</loc>
     <changefreq>monthly</changefreq>
@@ -9,21 +7,44 @@
   </url>
 
   <url>
-    <loc>https://yuvrajkarna.pages.dev/#about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://yuvrajkarna.pages.dev/blog</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://yuvrajkarna.pages.dev/#projects</loc>
+    <loc>https://yuvrajkarna.pages.dev/story</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://yuvrajkarna.pages.dev/#experience</loc>
+    <loc>https://yuvrajkarna.pages.dev/uses</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.6</priority>
   </url>
 
+  <url>
+    <loc>https://yuvrajkarna.pages.dev/blog/how-i-reduced-bundle-size</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yuvrajkarna.pages.dev/blog/redis-socketio-real-time</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yuvrajkarna.pages.dev/blog/webrtc-from-scratch</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://yuvrajkarna.pages.dev/blog/why-i-wrote-my-own-react-hooks</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

@@ -1,11 +1,19 @@
 import { useEffect, useRef } from "react";
 import { useTheme } from "../context/useTheme";
+import {
+  useHasFinePointer,
+  usePrefersReducedMotion,
+} from "../hooks/useMediaQuery";
 
 export default function CursorTrail() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
+  const finePointer = useHasFinePointer();
+  const reducedMotion = usePrefersReducedMotion();
+  const enabled = finePointer && !reducedMotion;
 
   useEffect(() => {
+    if (!enabled) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -50,11 +58,16 @@ export default function CursorTrail() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("resize", resize);
     };
-  }, [theme]);
+  }, [theme, enabled]);
+
+  // Skip rendering the canvas entirely on touch devices or when the user
+  // prefers reduced motion.
+  if (!enabled) return null;
 
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed top-0 left-0 pointer-events-none z-[9996]"
     />
   );
