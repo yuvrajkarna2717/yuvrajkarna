@@ -13,6 +13,8 @@ const Story = lazy(() => import("./Home/Story"));
 const Uses = lazy(() => import("./pages/Uses"));
 const BlogList = lazy(() => import("./pages/BlogList"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const TrackPage = lazy(() => import("./pages/TrackPage"));
+const PomodoroPage = lazy(() => import("./pages/PomodoroPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -64,6 +66,8 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/story" element={<Story />} />
             <Route path="/uses" element={<Uses />} />
+            <Route path="/track" element={<TrackPage />} />
+            <Route path="/pomodoro" element={<PomodoroPage />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="*" element={<NotFound />} />

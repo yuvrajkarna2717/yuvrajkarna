@@ -25,6 +25,12 @@
   </url>
 
   <url>
+    <loc>https://yuvrajkarna.pages.dev/pomodoro</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
     <loc>https://yuvrajkarna.pages.dev/blog/how-i-reduced-bundle-size</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

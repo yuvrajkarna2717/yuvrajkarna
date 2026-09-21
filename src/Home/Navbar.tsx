@@ -10,6 +10,8 @@ export default function Navbar() {
     { name: "About Me", to: "#about" },
     { name: "Projects", to: "#projects" },
     { name: "Experience", to: "#experience" },
+    { name: "Tracker", to: "/track" },
+    { name: "Pomodoro", to: "/pomodoro" },
     { name: "Blog", to: "/blog" },
     { name: "My Story", to: "/story" },
     { name: "Uses", to: "/uses" },

@@ -6,6 +6,28 @@ export default defineConfig({
   base: "/",
   plugins: [react()],
   assetsInclude: ["**/*.md"],
+  server: {
+    host: "0.0.0.0",
+    port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8788",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+  preview: {
+    host: "0.0.0.0",
+    port: 4173,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8788",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   build: {
     // Target modern browsers — smaller, faster output
     target: "esnext",
