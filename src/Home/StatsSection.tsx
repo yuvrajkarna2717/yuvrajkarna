@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { SiLeetcode } from "react-icons/si";
 import AnimationTitle from "./AnimationTitle";
+import { apiUrl } from "../lib/api";
 
 interface GitHubData {
   repos: number;
@@ -120,22 +121,10 @@ function setCachedLeetCode(data: LeetCodeData) {
 }
 
 async function fetchLeetCodeStats(): Promise<LeetCodeData> {
-  const res = await fetch(
-    "https://leetcode-stats-worker.yuvrajkarna.workers.dev/?username=yuvrajkarna"
-  );
+  const res = await fetch(apiUrl("/api/leetcode/yuvrajkarna"));
+  if (!res.ok) throw new Error(`LeetCode API error ${res.status}`);
   const json = await res.json();
-  const nums: { difficulty: string; count: number }[] =
-    json?.data?.matchedUser?.submitStats?.acSubmissionNum ?? [];
-
-  const get = (diff: string) =>
-    nums.find(n => n.difficulty === diff)?.count ?? 0;
-
-  const data: LeetCodeData = {
-    total: get("All"),
-    easy: get("Easy"),
-    medium: get("Medium"),
-    hard: get("Hard"),
-  };
+  const data: LeetCodeData = json.solved;
 
   // If the user wasn't matched (or the API returned nothing), all counts are 0.
   // Treat that as a failed fetch so we keep the fallback and don't cache zeros.
@@ -172,24 +161,27 @@ export default function StatsSection() {
 
     // ── GitHub (via worker) ───────────────────────────────────────────────
     const GITHUB_FALLBACK: GitHubData = { repos: 30, followers: 50, stars: 25 };
-    fetch(
-      "https://leetcode-stats-worker.yuvrajkarna.workers.dev/github?username=yuvrajkarna2717"
-    )
+    fetch(apiUrl("/api/github/yuvrajkarna2717"))
       .then(r => {
         if (!r.ok) throw new Error(`GitHub worker error ${r.status}`);
         return r.json();
       })
-      .then((data: GitHubData) => {
+      .then(data => {
+        const stats: GitHubData = {
+          repos: data?.totals?.repos ?? 0,
+          followers: data?.totals?.followers ?? 0,
+          stars: data?.totals?.stars ?? 0,
+        };
         // A zeroed-out response means the worker's GitHub call failed
         // (e.g. rate limit). Treat it as an error and show the fallback.
         if (
           !data ||
-          (data.repos === 0 && data.followers === 0 && data.stars === 0)
+          (stats.repos === 0 && stats.followers === 0 && stats.stars === 0)
         ) {
           setGithub(GITHUB_FALLBACK);
           return;
         }
-        setGithub(data);
+        setGithub(stats);
         setGithubLive(true);
       })
       .catch(() => {

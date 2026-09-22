@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
+import { apiUrl } from "../lib/api";
 import {
   calculateMonthStats,
   calculateMonthlyHabitMetrics,
@@ -25,7 +26,6 @@ import {
   type TrackerRecord,
 } from "../lib/tracker";
 
-const API_PATH = "/api/track";
 const EMPTY_NOTE = "";
 
 async function readJsonResponse(response: Response) {
@@ -122,7 +122,7 @@ export default function TrackPage() {
 
     try {
       const monthKey = formatMonthKey(clampMonthToRange(monthDate));
-      const response = await fetch(`${API_PATH}?month=${encodeURIComponent(monthKey)}`);
+      const response = await fetch(apiUrl(`/api/track?month=${encodeURIComponent(monthKey)}`));
       const payload = await readJsonResponse(response);
       setHabits(Array.isArray(payload?.habits) ? payload.habits : []);
       setRecords(Array.isArray(payload?.records) ? payload.records : []);
@@ -170,10 +170,8 @@ export default function TrackPage() {
 
     setSaving(true);
     try {
-      const response = await fetch(API_PATH, {
+      const response = await fetch(apiUrl(`/api/track/records/${dateKey}/toggle?habit_id=${encodeURIComponent(habitId)}`), {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "toggle-habit", date: dateKey, habitId }),
       });
 
       const payload = await readJsonResponse(response);
@@ -200,10 +198,10 @@ export default function TrackPage() {
 
     setSaving(true);
     try {
-      const response = await fetch(API_PATH, {
+      const response = await fetch(apiUrl(`/api/track/records/${activeDate}/note`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "update-note", date: activeDate, note: noteDraft }),
+        body: JSON.stringify({ note: noteDraft }),
       });
 
       const payload = await readJsonResponse(response);
@@ -226,10 +224,8 @@ export default function TrackPage() {
 
     setSaving(true);
     try {
-      const response = await fetch(API_PATH, {
+      const response = await fetch(apiUrl(`/api/track/records/${activeDate}/note`), {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "delete-note", date: activeDate }),
       });
 
       const payload = await readJsonResponse(response);
@@ -254,18 +250,17 @@ export default function TrackPage() {
 
     setSaving(true);
     try {
-      const response = await fetch(API_PATH, {
-        method: "POST",
+      const response = await fetch(
+        apiUrl(habitDraft.id ? `/api/track/habits/${habitDraft.id}` : "/api/track/habits"),
+        { method: habitDraft.id ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "upsert-habit",
-          habit: {
-            id: habitDraft.id || undefined,
-            name,
-            description: habitDraft.description,
-          },
+          name,
+          description: habitDraft.description,
+          is_active: true,
         }),
-      });
+        }
+      );
 
       const payload = await readJsonResponse(response);
       const nextHabit = payload?.habit;
@@ -290,10 +285,9 @@ export default function TrackPage() {
   const handleDeleteHabit = async (habitId: string) => {
     setSaving(true);
     try {
-      const response = await fetch(API_PATH, {
+      const response = await fetch(apiUrl(`/api/track/habits/${habitId}`), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "delete-habit", habitId }),
       });
 
       await readJsonResponse(response);

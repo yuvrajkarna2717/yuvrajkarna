@@ -5,6 +5,7 @@ import { FaBackward } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import { SiLeetcode, SiGeeksforgeeks } from "react-icons/si";
 import { useTheme } from "../context/useTheme";
+import { apiUrl } from "../lib/api";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface GitHubData {
@@ -20,8 +21,6 @@ interface LeetCodeData {
 }
 
 // ── Worker endpoints ──────────────────────────────────────────────────────────
-const WORKER = "https://leetcode-stats-worker.yuvrajkarna.workers.dev";
-
 const LC_CACHE_KEY = "lc_stats_cache";
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 
@@ -135,19 +134,13 @@ export default function Story() {
       setLc(cached);
       setLcLive(true);
     } else {
-      fetch(`${WORKER}/?username=yuvrajkarna27`)
-        .then(r => r.json())
+      fetch(apiUrl("/api/leetcode/yuvrajkarna27"))
+        .then(r => {
+          if (!r.ok) throw new Error(`LeetCode API error ${r.status}`);
+          return r.json();
+        })
         .then(json => {
-          const nums: { difficulty: string; count: number }[] =
-            json?.data?.matchedUser?.submitStats?.acSubmissionNum ?? [];
-          const get = (d: string) =>
-            nums.find(n => n.difficulty === d)?.count ?? 0;
-          const data = {
-            total: get("All"),
-            easy: get("Easy"),
-            medium: get("Medium"),
-            hard: get("Hard"),
-          };
+          const data = json.solved;
           setCachedLC(data);
           setLc(data);
           setLcLive(true);
@@ -158,10 +151,17 @@ export default function Story() {
     }
 
     // GitHub
-    fetch(`${WORKER}/github?username=yuvrajkarna2717`)
-      .then(r => r.json())
-      .then((data: GitHubData) => {
-        setGh(data);
+    fetch(apiUrl("/api/github/yuvrajkarna2717"))
+      .then(r => {
+        if (!r.ok) throw new Error(`GitHub API error ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        setGh({
+          repos: data?.totals?.repos ?? 0,
+          followers: data?.totals?.followers ?? 0,
+          stars: data?.totals?.stars ?? 0,
+        });
         setGhLive(true);
       })
       .catch(() => {
