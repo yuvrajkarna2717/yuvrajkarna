@@ -51,19 +51,18 @@ function StatCard({
   description,
 }: {
   label: string;
-  value: number;
+  value: number | null;
   suffix?: string;
   description?: string;
 }) {
-  const { count, nodeRef } = useCountUp(value);
+  const { count, nodeRef } = useCountUp(value ?? 0);
   return (
     <div
       ref={nodeRef}
       className="text-center p-6 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-gray-400 dark:hover:border-white/30 transition-all"
     >
       <p className="text-4xl font-bold text-black dark:text-white mb-1 font-mono tabular-nums">
-        {count.toLocaleString()}
-        {suffix}
+        {value === null ? "—" : `${count.toLocaleString()}${suffix}`}
       </p>
       <p className="text-sm font-medium text-black dark:text-white">{label}</p>
       {description && (
@@ -82,16 +81,8 @@ interface LeetCodeData {
   hard: number;
 }
 
-const LEETCODE_CACHE_KEY = "lc_stats_cache";
+const LEETCODE_CACHE_KEY = "lc_stats_cache_v2";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-
-// Static fallback if API or cache both fail
-const LEETCODE_FALLBACK: LeetCodeData = {
-  total: 1000,
-  easy: 400,
-  medium: 480,
-  hard: 120,
-};
 
 function getCachedLeetCode(): LeetCodeData | null {
   try {
@@ -138,7 +129,7 @@ async function fetchLeetCodeStats(): Promise<LeetCodeData> {
 export default function StatsSection() {
   const [github, setGithub] = useState<GitHubData | null>(null);
   const [githubLive, setGithubLive] = useState(false);
-  const [leetcode, setLeetcode] = useState<LeetCodeData>(LEETCODE_FALLBACK);
+  const [leetcode, setLeetcode] = useState<LeetCodeData | null>(null);
   const [leetcodeLive, setLeetcodeLive] = useState(false);
 
   useEffect(() => {
@@ -159,8 +150,7 @@ export default function StatsSection() {
         });
     }
 
-    // ── GitHub (via worker) ───────────────────────────────────────────────
-    const GITHUB_FALLBACK: GitHubData = { repos: 30, followers: 50, stars: 25 };
+    // ── GitHub ────────────────────────────────────────────────────────────
     fetch(apiUrl("/api/github/yuvrajkarna2717"))
       .then(r => {
         if (!r.ok) throw new Error(`GitHub worker error ${r.status}`);
@@ -178,14 +168,13 @@ export default function StatsSection() {
           !data ||
           (stats.repos === 0 && stats.followers === 0 && stats.stars === 0)
         ) {
-          setGithub(GITHUB_FALLBACK);
           return;
         }
         setGithub(stats);
         setGithubLive(true);
       })
       .catch(() => {
-        setGithub(GITHUB_FALLBACK);
+        setGithub(null);
       });
   }, []);
 
@@ -213,17 +202,17 @@ export default function StatsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard
             label="Public Repos"
-            value={github?.repos ?? 0}
+            value={github?.repos ?? null}
             description="Open-source projects"
           />
           <StatCard
             label="GitHub Stars"
-            value={github?.stars ?? 0}
+            value={github?.stars ?? null}
             description="Across all repos"
           />
           <StatCard
             label="Followers"
-            value={github?.followers ?? 0}
+            value={github?.followers ?? null}
             description="On GitHub"
           />
         </div>
@@ -246,25 +235,25 @@ export default function StatsSection() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <StatCard
             label="Total Solved"
-            value={leetcode.total}
+            value={leetcode?.total ?? null}
             suffix="+"
             description="Problems solved"
           />
           <StatCard
             label="Easy"
-            value={leetcode.easy}
+            value={leetcode?.easy ?? null}
             suffix="+"
             description="Easy problems"
           />
           <StatCard
             label="Medium"
-            value={leetcode.medium}
+            value={leetcode?.medium ?? null}
             suffix="+"
             description="Medium problems"
           />
           <StatCard
             label="Hard"
-            value={leetcode.hard}
+            value={leetcode?.hard ?? null}
             suffix="+"
             description="Hard problems"
           />

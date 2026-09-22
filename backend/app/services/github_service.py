@@ -47,6 +47,12 @@ class GitHubService:
 
         if profile_response.status_code == 404:
             raise GitHubServiceError("github_user_not_found", "GitHub user was not found.", 404)
+        if profile_response.status_code == 401 or repositories_response.status_code == 401:
+            raise GitHubServiceError(
+                "github_authentication_failed",
+                "The configured GitHub token is invalid or expired.",
+                502,
+            )
         if (
             profile_response.status_code in (403, 429)
             or repositories_response.status_code in (403, 429)

@@ -21,16 +21,8 @@ interface LeetCodeData {
 }
 
 // ── Worker endpoints ──────────────────────────────────────────────────────────
-const LC_CACHE_KEY = "lc_stats_cache";
+const LC_CACHE_KEY = "lc_stats_cache_v2";
 const CACHE_TTL = 24 * 60 * 60 * 1000;
-
-const LC_FALLBACK: LeetCodeData = {
-  total: 1000,
-  easy: 400,
-  medium: 480,
-  hard: 120,
-};
-const GH_FALLBACK: GitHubData = { repos: 30, followers: 50, stars: 25 };
 
 function getCachedLC(): LeetCodeData | null {
   try {
@@ -86,12 +78,11 @@ function useCountUp(target: number, duration = 1200) {
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
-function Num({ value, suffix = "" }: { value: number; suffix?: string }) {
-  const { count, ref } = useCountUp(value);
+function Num({ value, suffix = "" }: { value: number | null; suffix?: string }) {
+  const { count, ref } = useCountUp(value ?? 0);
   return (
     <span ref={ref} className="font-mono tabular-nums">
-      {count.toLocaleString()}
-      {suffix}
+      {value === null ? "—" : `${count.toLocaleString()}${suffix}`}
     </span>
   );
 }
@@ -121,8 +112,8 @@ export default function Story() {
   const { theme, toggleTheme } = useTheme();
 
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [gh, setGh] = useState<GitHubData>(GH_FALLBACK);
-  const [lc, setLc] = useState<LeetCodeData>(LC_FALLBACK);
+  const [gh, setGh] = useState<GitHubData | null>(null);
+  const [lc, setLc] = useState<LeetCodeData | null>(null);
   const [ghLive, setGhLive] = useState(false);
   const [lcLive, setLcLive] = useState(false);
 
@@ -134,7 +125,7 @@ export default function Story() {
       setLc(cached);
       setLcLive(true);
     } else {
-      fetch(apiUrl("/api/leetcode/yuvrajkarna27"))
+      fetch(apiUrl("/api/leetcode/yuvrajkarna"))
         .then(r => {
           if (!r.ok) throw new Error(`LeetCode API error ${r.status}`);
           return r.json();
@@ -261,7 +252,7 @@ export default function Story() {
           <div className="flex items-center justify-center gap-8 pt-8 text-center">
             <div>
               <p className="text-2xl font-bold font-mono">
-                <Num value={lc.total} />+
+                <Num value={lc?.total ?? null} />
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                 problems solved
@@ -270,7 +261,7 @@ export default function Story() {
             <div className="w-px h-8 bg-gray-200 dark:bg-white/10" />
             <div>
               <p className="text-2xl font-bold font-mono">
-                <Num value={gh.repos} />+
+                <Num value={gh?.repos ?? null} />
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                 repos shipped
@@ -279,7 +270,7 @@ export default function Story() {
             <div className="w-px h-8 bg-gray-200 dark:bg-white/10" />
             <div>
               <p className="text-2xl font-bold font-mono">
-                <Num value={gh.followers} />+
+                <Num value={gh?.followers ?? null} />
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                 GitHub followers
@@ -364,10 +355,10 @@ export default function Story() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
               {[
-                { label: "Total solved", value: lc.total, suffix: "+" },
-                { label: "Easy", value: lc.easy, suffix: "+" },
-                { label: "Medium", value: lc.medium, suffix: "+" },
-                { label: "Hard", value: lc.hard, suffix: "+" },
+                { label: "Total solved", value: lc?.total ?? null, suffix: "+" },
+                { label: "Easy", value: lc?.easy ?? null, suffix: "+" },
+                { label: "Medium", value: lc?.medium ?? null, suffix: "+" },
+                { label: "Hard", value: lc?.hard ?? null, suffix: "+" },
               ].map(s => (
                 <div key={s.label}>
                   <p className="text-2xl font-bold font-mono">
@@ -495,9 +486,9 @@ export default function Story() {
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
               {[
-                { label: "Public repos", value: gh.repos },
-                { label: "Total stars", value: gh.stars },
-                { label: "Followers", value: gh.followers },
+                { label: "Public repos", value: gh?.repos ?? null },
+                { label: "Total stars", value: gh?.stars ?? null },
+                { label: "Followers", value: gh?.followers ?? null },
               ].map(s => (
                 <div key={s.label}>
                   <p className="text-2xl font-bold font-mono">
