@@ -49,6 +49,19 @@ async def test_github_user_not_found(settings):
 
 @pytest.mark.asyncio
 @respx.mock
+async def test_github_rate_limit(settings):
+    respx.get("https://api.github.test/users/octocat").mock(return_value=httpx.Response(403))
+    respx.get("https://api.github.test/users/octocat/repos").mock(return_value=httpx.Response(403))
+
+    with pytest.raises(GitHubServiceError) as error:
+        await GitHubService(settings).get_stats("octocat")
+
+    assert error.value.code == "github_rate_limited"
+    assert error.value.status_code == 429
+
+
+@pytest.mark.asyncio
+@respx.mock
 async def test_leetcode_stats_success(settings):
     respx.post("https://leetcode.test/graphql").mock(
         return_value=httpx.Response(

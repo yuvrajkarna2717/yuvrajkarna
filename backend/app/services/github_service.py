@@ -47,10 +47,18 @@ class GitHubService:
 
         if profile_response.status_code == 404:
             raise GitHubServiceError("github_user_not_found", "GitHub user was not found.", 404)
-        if profile_response.status_code in (403, 429) or repositories_response.status_code in (403, 429):
+        if (
+            profile_response.status_code in (403, 429)
+            or repositories_response.status_code in (403, 429)
+            or profile_response.headers.get("x-ratelimit-remaining") == "0"
+            or repositories_response.headers.get("x-ratelimit-remaining") == "0"
+        ):
             raise GitHubServiceError("github_rate_limited", "GitHub rate limit exceeded.", 429)
         if not profile_response.is_success or not repositories_response.is_success:
-            raise GitHubServiceError("github_api_error", "GitHub returned an unexpected error.")
+            raise GitHubServiceError(
+                "github_api_error",
+                f"GitHub returned an unexpected error (profile={profile_response.status_code}, repositories={repositories_response.status_code}).",
+            )
 
         profile_data = profile_response.json()
         repositories_data = repositories_response.json()
