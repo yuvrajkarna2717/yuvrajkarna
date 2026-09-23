@@ -5,6 +5,7 @@ import TerminalMode from "./components/TerminalMode";
 import CursorTrail from "./components/CursorTrail";
 import Confetti from "./components/Confetti";
 import ErrorBoundary from "./components/ErrorBoundary";
+import PrivateRoute from "./components/PrivateRoute";
 import { useKonami } from "./hooks/useKonami";
 
 // Route-level code splitting — each page is a separate chunk
@@ -13,6 +14,7 @@ const Story = lazy(() => import("./Home/Story"));
 const Uses = lazy(() => import("./pages/Uses"));
 const BlogList = lazy(() => import("./pages/BlogList"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const PersonalPage = lazy(() => import("./pages/PersonalPage"));
 const TrackPage = lazy(() => import("./pages/TrackPage"));
 const PomodoroPage = lazy(() => import("./pages/PomodoroPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -66,8 +68,25 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/story" element={<Story />} />
             <Route path="/uses" element={<Uses />} />
-            <Route path="/track" element={<TrackPage />} />
-            <Route path="/pomodoro" element={<PomodoroPage />} />
+            {/* Private entry point — password gate */}
+            <Route path="/personal" element={<PersonalPage />} />
+            {/* Protected routes — redirect to /personal when unauthenticated */}
+            <Route
+              path="/track"
+              element={
+                <PrivateRoute>
+                  <TrackPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/pomodoro"
+              element={
+                <PrivateRoute>
+                  <PomodoroPage />
+                </PrivateRoute>
+              }
+            />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="*" element={<NotFound />} />
