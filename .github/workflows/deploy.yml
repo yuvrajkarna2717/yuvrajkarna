@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: CI & Deploy
 
 on:
   push:
@@ -6,8 +6,55 @@ on:
       - main
 
 jobs:
+  quality:
+    name: Frontend Lint & Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run pytest
+        run: pytest backend/tests
+
   deploy:
-    name: Build & Deploy
+    name: Build & Deploy Frontend
+    needs: [quality, backend-tests]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,34 +83,8 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=yuvrajkarna
 
-  deploy-worker:
-    name: Deploy Stats Worker
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: leetcode-stats-worker/package-lock.json
-
-      - name: Install worker dependencies
-        run: npm ci
-        working-directory: leetcode-stats-worker
-
-      - name: Deploy Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: leetcode-stats-worker
-          command: deploy
-          secrets: |
-            GITHUB_TOKEN
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_STATS_TOKEN }}
+  # NOTE: The FastAPI backend is deployed on Render, which auto-deploys from
+  # this repo on push to main. No deploy step is needed here — the
+  # backend-tests job above gates that deploy by failing the pipeline on a
+  # broken backend. If you ever move off Render's auto-deploy, add a deploy
+  # job here that depends on [quality, backend-tests].

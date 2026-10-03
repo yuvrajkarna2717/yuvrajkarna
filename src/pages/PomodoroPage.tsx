@@ -59,6 +59,7 @@ export default function PomodoroPage() {
     title: "Pomodoro",
     description: "A simple 50-minute study and 10-minute break timer.",
     path: "/pomodoro",
+    noindex: true,
   });
 
   const [phase, setPhase] = useState<Phase>("study");

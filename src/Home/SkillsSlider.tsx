@@ -3,35 +3,35 @@ import React, { useState } from "react";
 // Define skill interface
 interface Skill {
   name: string;
-  icon: string;
   category: "frontend" | "backend" | "tools";
 }
 
-// Skills data with icons and categories
+// Skills data grouped by category. Chips render a letter avatar, so no icon
+// asset is needed per skill.
 const skills: Skill[] = [
   // Frontend
-  { name: "JavaScript", icon: "javascript", category: "frontend" },
-  { name: "React.js", icon: "react", category: "frontend" },
-  { name: "TypeScript", icon: "typescript", category: "frontend" },
-  { name: "TailwindCSS", icon: "tailwind", category: "frontend" },
-  { name: "Next.js", icon: "nextjs", category: "frontend" },
-  { name: "Bootstrap", icon: "bootstrap", category: "frontend" },
+  { name: "JavaScript", category: "frontend" },
+  { name: "React.js", category: "frontend" },
+  { name: "TypeScript", category: "frontend" },
+  { name: "TailwindCSS", category: "frontend" },
+  { name: "Next.js", category: "frontend" },
+  { name: "Bootstrap", category: "frontend" },
 
   // Backend
-  { name: "Node.js", icon: "node", category: "backend" },
-  { name: "Express.js", icon: "express", category: "backend" },
-  { name: "MongoDB", icon: "mongodb", category: "backend" },
-  { name: "PostgreSQL", icon: "postgresql", category: "backend" },
-  { name: "Redis", icon: "redis", category: "backend" },
-  { name: "Firebase", icon: "firebase", category: "backend" },
-  { name: "Nest.js", icon: "node", category: "backend" },
+  { name: "Node.js", category: "backend" },
+  { name: "Express.js", category: "backend" },
+  { name: "MongoDB", category: "backend" },
+  { name: "PostgreSQL", category: "backend" },
+  { name: "Redis", category: "backend" },
+  { name: "Firebase", category: "backend" },
+  { name: "Nest.js", category: "backend" },
 
   // Tools & Others
-  { name: "Git", icon: "git", category: "tools" },
-  { name: "Docker", icon: "docker", category: "tools" },
-  { name: "Jest", icon: "jest", category: "tools" },
-  { name: "CI/CD", icon: "cicd", category: "tools" },
-  { name: "GitHub Actions", icon: "githubaction", category: "tools" },
+  { name: "Git", category: "tools" },
+  { name: "Docker", category: "tools" },
+  { name: "Jest", category: "tools" },
+  { name: "CI/CD", category: "tools" },
+  { name: "GitHub Actions", category: "tools" },
 ];
 
 const SkillsDisplay: React.FC = () => {
@@ -94,7 +94,7 @@ const SkillsDisplay: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex flex-wrap justify-center mb-6">
           {displayedSkills.map((skill, index) => (
-            <SkillItem key={index} skill={skill} index={index} />
+            <SkillItem key={skill.name} skill={skill} index={index} />
           ))}
         </div>
 

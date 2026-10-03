@@ -14,6 +14,7 @@ export default function Navbar() {
     { name: "Pomodoro", to: "/pomodoro" },
     { name: "Blog", to: "/blog" },
     { name: "My Story", to: "/story" },
+    { name: "Certificates", to: "/certificates" },
     { name: "Uses", to: "/uses" },
     { name: "Open Source", to: "#opensource" },
   ];

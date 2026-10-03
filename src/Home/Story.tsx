@@ -5,45 +5,9 @@ import { FaBackward } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import { SiLeetcode, SiGeeksforgeeks } from "react-icons/si";
 import { useTheme } from "../context/useTheme";
-import { apiUrl } from "../lib/api";
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-interface GitHubData {
-  repos: number;
-  followers: number;
-  stars: number;
-}
-interface LeetCodeData {
-  total: number;
-  easy: number;
-  medium: number;
-  hard: number;
-}
-
-// ── Worker endpoints ──────────────────────────────────────────────────────────
-const LC_CACHE_KEY = "lc_stats_cache_v2";
-const CACHE_TTL = 24 * 60 * 60 * 1000;
-
-function getCachedLC(): LeetCodeData | null {
-  try {
-    const raw = localStorage.getItem(LC_CACHE_KEY);
-    if (!raw) return null;
-    const { data, ts } = JSON.parse(raw);
-    return Date.now() - ts < CACHE_TTL ? data : null;
-  } catch {
-    return null;
-  }
-}
-function setCachedLC(data: LeetCodeData) {
-  try {
-    localStorage.setItem(
-      LC_CACHE_KEY,
-      JSON.stringify({ data, ts: Date.now() })
-    );
-  } catch {
-    /* ignore */
-  }
-}
+import { CONTACT, mailto } from "../lib/contact";
+import { usePageMeta } from "../lib/usePageMeta";
+import { useDevStats } from "../hooks/useDevStats";
 
 // ── Animated number hook ──────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1200) {
@@ -111,55 +75,26 @@ export default function Story() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
 
+  usePageMeta({
+    title: "My Coding Story",
+    description:
+      "The personal story behind Yuvraj Karna — late nights, stubborn bugs, and the journey from Hello World to shipping real software.",
+    path: "/story",
+    type: "article",
+  });
+
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [gh, setGh] = useState<GitHubData | null>(null);
-  const [lc, setLc] = useState<LeetCodeData | null>(null);
-  const [ghLive, setGhLive] = useState(false);
-  const [lcLive, setLcLive] = useState(false);
+  const {
+    github: gh,
+    githubStatus,
+    leetcode: lc,
+    leetcodeStatus,
+  } = useDevStats("yuvrajkarna2717", "yuvrajkarna");
+  const ghLive = githubStatus === "live";
+  const lcLive = leetcodeStatus === "live";
 
-  // ── Fetch data ──────────────────────────────────────────────────────────
+  // ── Scroll progress ───────────────────────────────────────────────────────
   useEffect(() => {
-    // LeetCode – serve cache first
-    const cached = getCachedLC();
-    if (cached) {
-      setLc(cached);
-      setLcLive(true);
-    } else {
-      fetch(apiUrl("/api/leetcode/yuvrajkarna"))
-        .then(r => {
-          if (!r.ok) throw new Error(`LeetCode API error ${r.status}`);
-          return r.json();
-        })
-        .then(json => {
-          const data = json.solved;
-          setCachedLC(data);
-          setLc(data);
-          setLcLive(true);
-        })
-        .catch(() => {
-          /* keep fallback */
-        });
-    }
-
-    // GitHub
-    fetch(apiUrl("/api/github/yuvrajkarna2717"))
-      .then(r => {
-        if (!r.ok) throw new Error(`GitHub API error ${r.status}`);
-        return r.json();
-      })
-      .then(data => {
-        setGh({
-          repos: data?.totals?.repos ?? 0,
-          followers: data?.totals?.followers ?? 0,
-          stars: data?.totals?.stars ?? 0,
-        });
-        setGhLive(true);
-      })
-      .catch(() => {
-        /* keep fallback */
-      });
-
-    // Scroll progress
     const onScroll = () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
       setScrollProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
@@ -169,12 +104,12 @@ export default function Story() {
   }, []);
 
   const links = {
-    leetcode: "https://leetcode.com/u/yuvrajkarna27",
+    leetcode: "https://leetcode.com/u/yuvrajkarna",
     geeksforgeeks: "https://auth.geeksforgeeks.org/user/yuvrajkarna27",
     github: "https://github.com/yuvrajkarna2717",
     githubRepos: "https://github.com/yuvrajkarna2717?tab=repositories",
-    contact: "mailto:yuvrajkarna.code@gmail.com",
-    resume: "/resume/YuvrajKarna.pdf",
+    contact: mailto,
+    resume: CONTACT.resume,
   };
 
   return (

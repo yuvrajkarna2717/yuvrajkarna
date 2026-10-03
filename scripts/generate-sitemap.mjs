@@ -15,8 +15,8 @@ const staticRoutes = [
   { path: "/", priority: "1.0", changefreq: "monthly" },
   { path: "/blog", priority: "0.9", changefreq: "weekly" },
   { path: "/story", priority: "0.7", changefreq: "monthly" },
+  { path: "/certificates", priority: "0.6", changefreq: "monthly" },
   { path: "/uses", priority: "0.6", changefreq: "monthly" },
-  { path: "/pomodoro", priority: "0.6", changefreq: "monthly" },
 ];
 
 function frontmatterFlag(raw, key) {

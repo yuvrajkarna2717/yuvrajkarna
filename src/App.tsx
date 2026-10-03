@@ -12,6 +12,7 @@ import { useKonami } from "./hooks/useKonami";
 const Home = lazy(() => import("./Home/Home"));
 const Story = lazy(() => import("./Home/Story"));
 const Uses = lazy(() => import("./pages/Uses"));
+const Certificates = lazy(() => import("./pages/Certificates"));
 const BlogList = lazy(() => import("./pages/BlogList"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const PersonalPage = lazy(() => import("./pages/PersonalPage"));
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/story" element={<Story />} />
             <Route path="/uses" element={<Uses />} />
+            <Route path="/certificates" element={<Certificates />} />
             {/* Private entry point — password gate */}
             <Route path="/personal" element={<PersonalPage />} />
             {/* Protected routes — redirect to /personal when unauthenticated */}

@@ -2,13 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { SiLeetcode } from "react-icons/si";
 import AnimationTitle from "./AnimationTitle";
-import { apiUrl } from "../lib/api";
-
-interface GitHubData {
-  repos: number;
-  followers: number;
-  stars: number;
-}
+import { useDevStats } from "../hooks/useDevStats";
 
 function useCountUp(target: number, duration = 1400) {
   const [count, setCount] = useState(0);
@@ -74,109 +68,36 @@ function StatCard({
   );
 }
 
-interface LeetCodeData {
-  total: number;
-  easy: number;
-  medium: number;
-  hard: number;
-}
-
-const LEETCODE_CACHE_KEY = "lc_stats_cache_v2";
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-
-function getCachedLeetCode(): LeetCodeData | null {
-  try {
-    const raw = localStorage.getItem(LEETCODE_CACHE_KEY);
-    if (!raw) return null;
-    const { data, timestamp } = JSON.parse(raw) as {
-      data: LeetCodeData;
-      timestamp: number;
-    };
-    if (Date.now() - timestamp > CACHE_TTL_MS) return null; // expired
-    if (!data || data.total === 0) return null; // ignore bad/zeroed cache
-    return data;
-  } catch {
-    return null;
-  }
-}
-
-function setCachedLeetCode(data: LeetCodeData) {
-  try {
-    localStorage.setItem(
-      LEETCODE_CACHE_KEY,
-      JSON.stringify({ data, timestamp: Date.now() })
+function StatusBadge({ status }: { status: "loading" | "live" | "error" }) {
+  if (status === "live") {
+    return (
+      <span className="text-xs text-green-500 flex items-center gap-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse" />
+        live
+      </span>
     );
-  } catch {
-    // storage quota exceeded — ignore
   }
-}
-
-async function fetchLeetCodeStats(): Promise<LeetCodeData> {
-  const res = await fetch(apiUrl("/api/leetcode/yuvrajkarna"));
-  if (!res.ok) throw new Error(`LeetCode API error ${res.status}`);
-  const json = await res.json();
-  const data: LeetCodeData = json.solved;
-
-  // If the user wasn't matched (or the API returned nothing), all counts are 0.
-  // Treat that as a failed fetch so we keep the fallback and don't cache zeros.
-  if (data.total === 0) {
-    throw new Error("LeetCode returned no data");
+  if (status === "loading") {
+    return (
+      <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-white/20 inline-block animate-pulse" />
+        loading
+      </span>
+    );
   }
-
-  return data;
+  return (
+    <span className="text-xs text-amber-500 flex items-center gap-1">
+      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" />
+      showing last known
+    </span>
+  );
 }
 
 export default function StatsSection() {
-  const [github, setGithub] = useState<GitHubData | null>(null);
-  const [githubLive, setGithubLive] = useState(false);
-  const [leetcode, setLeetcode] = useState<LeetCodeData | null>(null);
-  const [leetcodeLive, setLeetcodeLive] = useState(false);
-
-  useEffect(() => {
-    // ── LeetCode: read from cache first, fetch only if stale ──────────────
-    const cached = getCachedLeetCode();
-    if (cached) {
-      setLeetcode(cached);
-      setLeetcodeLive(true);
-    } else {
-      fetchLeetCodeStats()
-        .then(data => {
-          setCachedLeetCode(data);
-          setLeetcode(data);
-          setLeetcodeLive(true);
-        })
-        .catch(() => {
-          // network/CORS error — keep fallback values, no live indicator
-        });
-    }
-
-    // ── GitHub ────────────────────────────────────────────────────────────
-    fetch(apiUrl("/api/github/yuvrajkarna2717"))
-      .then(r => {
-        if (!r.ok) throw new Error(`GitHub worker error ${r.status}`);
-        return r.json();
-      })
-      .then(data => {
-        const stats: GitHubData = {
-          repos: data?.totals?.repos ?? 0,
-          followers: data?.totals?.followers ?? 0,
-          stars: data?.totals?.stars ?? 0,
-        };
-        // A zeroed-out response means the worker's GitHub call failed
-        // (e.g. rate limit). Treat it as an error and show the fallback.
-        if (
-          !data ||
-          (stats.repos === 0 && stats.followers === 0 && stats.stars === 0)
-        ) {
-          return;
-        }
-        setGithub(stats);
-        setGithubLive(true);
-      })
-      .catch(() => {
-        setGithub(null);
-      });
-  }, []);
+  const { github, githubStatus, leetcode, leetcodeStatus } = useDevStats(
+    "yuvrajkarna2717",
+    "yuvrajkarna"
+  );
 
   return (
     <section id="stats" className="py-20 px-4 sm:px-6 bg-white dark:bg-dark-bg">
@@ -192,12 +113,7 @@ export default function StatsSection() {
           <h3 className="font-semibold text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">
             GitHub
           </h3>
-          {githubLive && (
-            <span className="text-xs text-green-500 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse" />
-              live
-            </span>
-          )}
+          <StatusBadge status={githubStatus} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard
@@ -225,12 +141,7 @@ export default function StatsSection() {
           <h3 className="font-semibold text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">
             LeetCode
           </h3>
-          {leetcodeLive && (
-            <span className="text-xs text-green-500 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse" />
-              live
-            </span>
-          )}
+          <StatusBadge status={leetcodeStatus} />
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <StatCard

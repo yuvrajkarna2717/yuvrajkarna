@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Search } from "lucide-react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
+import { CONTACT, mailto } from "../lib/contact";
 
 interface CommandItem {
   id: string;
@@ -156,15 +157,15 @@ const allCommands: CommandItem[] = [
     label: "View Resume",
     icon: "📄",
     description: "Open PDF resume",
-    action: () => window.open("/resume/YuvrajKarna.pdf", "_blank"),
+    action: () => window.open(CONTACT.resume, "_blank"),
   },
   {
     id: "email",
     label: "Email Me",
     icon: "📧",
-    description: "yuvrajkarna.code@gmail.com",
+    description: CONTACT.email,
     action: () => {
-      window.location.href = "mailto:yuvrajkarna.code@gmail.com";
+      window.location.href = mailto;
     },
   },
 ];

@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router-dom";
 import ThemeToggle from "../components/ThemeToggle";
 import { apiUrl } from "../lib/api";
+import { usePageMeta } from "../lib/usePageMeta";
 import {
   calculateMonthStats,
   calculateMonthlyHabitMetrics,
@@ -38,6 +39,9 @@ async function readJsonResponse(response: Response) {
     throw new Error("Tracker API is unavailable in this environment.");
   }
 
+  // Payload shape varies per endpoint; callers narrow with Array.isArray and
+  // optional chaining. Kept loosely typed to avoid rippling casts everywhere.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let payload: any;
   try {
     payload = JSON.parse(rawText);
@@ -77,6 +81,8 @@ function addMonth(date: Date, offset: number) {
 }
 
 export default function TrackPage() {
+  usePageMeta({ title: "Habit Tracker", path: "/track", noindex: true });
+
   const today = useMemo(() => clampMonthToRange(new Date()), []);
   const [selectedMonth, setSelectedMonth] = useState(today);
   const [habits, setHabits] = useState<HabitDefinition[]>([]);

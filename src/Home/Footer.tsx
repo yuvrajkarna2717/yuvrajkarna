@@ -1,6 +1,14 @@
 import { FcLike } from "react-icons/fc";
 import { SiHappycow } from "react-icons/si";
 import { Link } from "react-router-dom";
+import { mailto, SOCIAL_LINKS } from "../lib/contact";
+
+const GITHUB_URL =
+  SOCIAL_LINKS.find(s => s.label === "GitHub")?.href ??
+  "https://github.com/yuvrajkarna2717";
+const LINKEDIN_URL =
+  SOCIAL_LINKS.find(s => s.label === "LinkedIn")?.href ??
+  "https://www.linkedin.com/in/yuvrajkarna";
 
 export default function Footer() {
   return (
@@ -10,7 +18,7 @@ export default function Footer() {
           Crafted with <FcLike className="w-5 h-5" /> and passion by
         </p>
         <a
-          href="https://www.linkedin.com/in/yuvrajkarna"
+          href={LINKEDIN_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold hover:underline"
@@ -28,7 +36,7 @@ export default function Footer() {
         </Link>
         <span>·</span>
         <a
-          href="https://github.com/yuvrajkarna2717"
+          href={GITHUB_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-black dark:hover:text-white transition"
@@ -37,7 +45,7 @@ export default function Footer() {
         </a>
         <span>·</span>
         <a
-          href="mailto:yuvrajkarna.code@gmail.com"
+          href={mailto}
           className="hover:text-black dark:hover:text-white transition"
         >
           Email

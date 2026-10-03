@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { usePageMeta } from "../lib/usePageMeta";
 
 export default function PersonalPage() {
-  usePageMeta({ title: "Personal · Yuvraj Karna" });
+  usePageMeta({ title: "Personal", path: "/personal", noindex: true });
 
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();

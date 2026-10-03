@@ -1,74 +1,104 @@
 # Yuvraj Karna Portfolio
 
-A React, TypeScript, and Vite portfolio with a FastAPI backend for live GitHub/LeetCode statistics and the MongoDB-backed habit tracker.
+A modern portfolio website built with React, TypeScript, and Vite, designed to showcase work, projects, writing, and personal productivity tools in one place.
 
-## Architecture
+## Features
+
+### Portfolio and personal branding
+- Responsive landing page with a clean, modern design
+- Hero section and polished navigation
+- Sections for skills, experience, education, certifications, projects, and open-source work
+- About section and storytelling-driven personal content
+- Blog list and individual blog post pages
+- SEO-friendly page metadata and sitemap generation
+
+### Live developer metrics
+- Real-time GitHub stats such as public repositories, stars, and followers
+- Live LeetCode problem-solving metrics with solved counts by difficulty
+- Cached data handling to reduce unnecessary network calls
+- Error-safe fallback behavior when external APIs are unavailable
+
+### Productivity tools
+- Private personal area protected by password-based authentication
+- Habit tracker with monthly calendar views
+- Add, edit, and delete custom habits
+- Toggle completion for each habit on any day
+- Daily notes for journaling or reflections
+- Monthly summary metrics for trend tracking
+- Pomodoro timer with configurable work and break durations
+- Session cycle tracking and completion state
+
+### UX and interaction
+- Dark mode and light mode toggle
+- Keyboard shortcuts for quick navigation
+- Command palette support
+- Terminal-style interactive experience
+- Cursor trail and celebratory confetti easter egg
+- Lazy-loaded sections for better performance
+- Page transitions and smooth user experience
+
+### Technical foundation
+- React + Vite frontend with TypeScript
+- Tailwind CSS styling
+- React Router for multi-page navigation
+- FastAPI backend for external API integration and tracker data
+- MongoDB-backed habit data persistence
+- Clean code structure with reusable components and hooks
+
+## Tech stack
+
+- Frontend: React, TypeScript, Vite, Tailwind CSS
+- Backend: FastAPI, Python
+- Data: MongoDB, GitHub REST API, LeetCode GraphQL
+- Tools: React Router, Lucide icons, custom hooks, markdown blog rendering
+
+## Project structure
 
 ```text
-React + Vite frontend
-				| HTTP /api
-				v
-FastAPI backend
-	|-- GitHub REST API
-	|-- LeetCode GraphQL API
-	`-- MongoDB tracker collections
+src/
+  App.tsx
+  Home/
+  pages/
+  components/
+  context/
+  lib/
+  hooks/
+backend/
+  app/
+  tests/
 ```
 
-The repository has one API architecture: `backend/`. The former Cloudflare Pages Function and standalone Cloudflare stats Worker have been removed.
+## Local development
 
-## Frontend setup
+### Frontend
 
 ```bash
 npm install
-cp .env.example .env
 npm run dev
 ```
 
-The Vite dev server proxies `/api` to `http://localhost:8000`. Set `VITE_API_BASE_URL` in `.env` when the backend is deployed separately.
-
-## FastAPI setup
+### Backend
 
 ```bash
 python3 -m venv backend/.venv
 source backend/.venv/bin/activate
 pip install -r backend/requirements.txt
-cp backend/.env.example backend/.env
 uvicorn app.main:app --app-dir backend --reload --port 8000
 ```
 
-Swagger documentation is available at `http://localhost:8000/docs`.
+You can visit the Swagger docs at:
 
-### Backend environment variables
+```text
+http://localhost:8000/docs
+```
 
-- `API_BASE_URL`: public backend URL.
-- `CORS_ORIGINS`: comma-separated frontend origins.
-- `GITHUB_TOKEN`: optional GitHub token for the higher API rate limit.
-- `GITHUB_API_URL`: GitHub API base URL.
-- `LEETCODE_API_URL`: LeetCode GraphQL endpoint.
-- `MONGODB_URI`: MongoDB connection string for tracker persistence.
-- `MONGODB_DB_NAME`: MongoDB database name.
-- `EXTERNAL_API_TIMEOUT_SECONDS`: external service timeout.
-- `STATS_CACHE_TTL_SECONDS`: in-memory stats cache duration.
+## Production notes
 
-## API endpoints
+- Frontend is deployed on Cloudflare Pages
+- Backend is hosted on Render
+- The app uses environment variables to connect the frontend with the FastAPI API
+- Private routes are gated for personal productivity tools
 
-- `GET /api/health`
-- `GET /api/github/{username}`
-- `GET /api/leetcode/{username}`
-- `GET /api/track?month=YYYY-MM`
-- `POST /api/track/habits`
-- `PATCH /api/track/habits/{habit_id}`
-- `DELETE /api/track/habits/{habit_id}`
-- `PATCH /api/track/records/{date}/toggle?habit_id=...`
-- `PATCH /api/track/records/{date}/note`
-- `DELETE /api/track/records/{date}/note`
+## Summary
 
-GitHub uses the official REST API for profile and repository data. LeetCode uses its public GraphQL endpoint for profile, solved difficulty counts, and contest data. Both use async requests, timeouts, TTL caching, and structured errors.
-
-The tracker uses the existing MongoDB database and collections. Habit definitions remain database-only; no default habits are seeded.
-
-## Testing
-
-```bash
-backend/.venv/bin/pytest backend/tests
-npm run build
+This portfolio is not just a static resume site — it combines personal presentation, live coding metrics, content publishing, and practical productivity features into a single developer-focused experience.

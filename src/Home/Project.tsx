@@ -5,6 +5,12 @@ import AnimationTitle from "./AnimationTitle";
 interface Project {
   title: string;
   description: string;
+  /** The problem this project set out to solve (the "why"). */
+  problem?: string;
+  /** What Yuvraj personally did — scope and ownership. */
+  role?: string;
+  /** The outcome or measurable impact. */
+  impact?: string;
   techStack: string[];
   highlights: string[];
   github?: string;
@@ -20,6 +26,12 @@ const projects: Project[] = [
     title: "Mora",
     description:
       "A privacy-first Chrome extension that helps users understand their browser usage by tracking exact time spent on different platforms, providing actionable AI-driven productivity insights while keeping data secure.",
+    problem:
+      "People lose hours to context-switching across tabs but have no honest, private picture of where that time actually goes — most trackers trade privacy for insight.",
+    role:
+      "Sole developer — designed the local-first data model, built the background/content scripts for accurate per-URL timing, and shipped the AI insights layer and dashboard.",
+    impact:
+      "A working extension that keeps all data in the browser by default, with optional encrypted cloud sync and zero measurable impact on browsing performance.",
     techStack: ["HTML", "CSS", "JavaScript", "Node.js"],
     highlights: [
       "Built a Chrome extension that tracks exact time spent per base URL to give users deep insights into their browsing behavior",
@@ -39,6 +51,12 @@ const projects: Project[] = [
     title: "React Utility Hooks",
     description:
       "An open-source npm package that provides a curated collection of reusable and production-ready React hooks to simplify common frontend development tasks.",
+    problem:
+      "The same utility hooks (clipboard, media queries, debouncing) get rewritten in every React project, usually without tests or clear APIs.",
+    role:
+      "Author and maintainer — designed the hook APIs, wrote the test suite, authored the docs, and published and version the package on npm.",
+    impact:
+      "A documented, tree-shakeable package with 98% test coverage that drops common patterns into any React app behind a clean, typed API.",
     techStack: ["React", "TypeScript", "JavaScript", "Vitest", "npm"],
     highlights: [
       "Built and published an open-source npm package offering a wide range of reusable React hooks such as useClipboard and other utility hooks",
@@ -49,7 +67,7 @@ const projects: Project[] = [
       "Focused on clean APIs and developer experience to make the package easy to adopt and extend",
       "Structured the codebase for scalability, enabling easy addition of new hooks in the future",
     ],
-    github: "https://github.com/username/react-utility-hooks",
+    github: "https://github.com/yuvrajkarna2717/react-utility-hooks",
     live: "https://www.npmjs.com/package/react-utility-hooks",
     category: "frontend",
     status: "completed",
@@ -58,6 +76,12 @@ const projects: Project[] = [
     title: "OpenBooks API",
     description:
       "An open-source backend platform that ingests publicly available book metadata via automated scraping pipelines and exposes it through clean, well-documented REST APIs, focusing on real-world backend system design and scalability.",
+    problem:
+      "Public book metadata is scattered and inconsistent, and most sample APIs sprawl into dozens of narrow, hard-to-maintain endpoints.",
+    role:
+      "Sole developer — built the scraping/ingestion pipeline, designed the relational schema and migrations, and collapsed the API surface into one flexible query-driven endpoint.",
+    impact:
+      "Replaced ~15 narrow endpoints with a single endpoint supporting pagination, filtering, sorting, and search over 1,000+ normalized records, with Swagger docs, rate limiting, CI tests, and scheduled refreshes.",
     techStack: [
       "Node.js",
       "Express.js",
@@ -87,6 +111,12 @@ const projects: Project[] = [
     title: "Algorithm Visualizer",
     description:
       "An interactive algorithm visualizer built with React and TypeScript that demonstrates the inner workings of common algorithms through real-time, step-by-step animations for intuitive learning.",
+    problem:
+      "Sorting and search algorithms are hard to grasp from static diagrams — learners need to see each comparison and swap happen.",
+    role:
+      "Sole developer — built the animation engine, the reusable step-driven components, and the playback controls.",
+    impact:
+      "Visualizes 8 core algorithms with play, pause, speed, and reset controls, structured so new algorithms slot in without touching the engine.",
     techStack: ["React", "TypeScript", "HTML", "CSS"],
     highlights: [
       "Built an interactive algorithm visualizer using React and TypeScript for better state management and type safety",
@@ -97,7 +127,7 @@ const projects: Project[] = [
       "Focused on visual clarity and smooth animations to make complex algorithm behavior easy to understand",
       "Structured the project to allow easy addition of new algorithms and visualizations",
     ],
-    github: "https://github.com/username/algorithm-visualizer",
+    github: "https://github.com/yuvrajkarna2717/algorithm-visualizer",
     live: "https://algorithm-visualizer-demo.pages.dev",
     category: "frontend",
     status: "completed",
@@ -106,6 +136,12 @@ const projects: Project[] = [
     title: "QuickRev Bot",
     description:
       "A Telegram-based revision assistant that helps users quickly revise any topic by generating comprehensive explanations, subtopics, and all possible question–answer pairs from given text or concepts.",
+    problem:
+      "Last-minute revision means hunting for concise explanations and likely questions across scattered sources — slow when time is short.",
+    role:
+      "Sole developer — built the conversational flows, the Telegram message pipeline, and the generative-AI prompt layer.",
+    impact:
+      "Turns any topic, paragraph, or raw text into structured explanations plus exam-style Q&A right inside the chat, built for fast last-minute prep.",
     techStack: ["Node.js", "Typescript", "Telegram API", "generative AI"],
     highlights: [
       "Built an intelligent Telegram bot that allows users to revise topics directly within the chat interface",
@@ -116,7 +152,7 @@ const projects: Project[] = [
       "Handled real-time message processing and response generation using Telegram Bot APIs",
     ],
     category: "backend",
-    github: "https://github.com/username/quickrev-bot",
+    github: "https://github.com/yuvrajkarna2717/quickrev-bot",
     live: "https://t.me/quickrev_bot",
     status: "completed",
   },
@@ -306,6 +342,42 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                 {project.description}
               </p>
+
+              {/* Case study: Problem → Role → Impact */}
+              {(project.problem || project.role || project.impact) && (
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {project.problem && (
+                    <div className="rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
+                      <p className="text-[11px] font-mono text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">
+                        Problem
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {project.problem}
+                      </p>
+                    </div>
+                  )}
+                  {project.role && (
+                    <div className="rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
+                      <p className="text-[11px] font-mono text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">
+                        My role
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {project.role}
+                      </p>
+                    </div>
+                  )}
+                  {project.impact && (
+                    <div className="rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 p-4">
+                      <p className="text-[11px] font-mono text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5">
+                        Impact
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        {project.impact}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Built with */}
               <div>

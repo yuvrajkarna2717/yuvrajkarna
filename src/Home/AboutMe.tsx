@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Mail, Phone, MapPin, Copy, Check } from "lucide-react";
+import { CONTACT, mailto, telHref } from "../lib/contact";
 
 const INTERESTS = [
   "Full-Stack Dev",
@@ -56,13 +57,14 @@ function CopyableRow({
       </div>
       <button
         onClick={handleCopy}
-        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 dark:text-gray-500"
-        title="Copy"
+        className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 dark:text-gray-500"
+        title={`Copy ${label.toLowerCase()}`}
+        aria-label={copied ? `${label} copied` : `Copy ${label.toLowerCase()}`}
       >
         {copied ? (
-          <Check size={14} className="text-green-500" />
+          <Check size={14} className="text-green-500" aria-hidden="true" />
         ) : (
-          <Copy size={14} />
+          <Copy size={14} aria-hidden="true" />
         )}
       </button>
     </div>
@@ -158,19 +160,19 @@ export function AboutMe() {
               <CopyableRow
                 icon={<Mail size={16} />}
                 label="Email"
-                value="yuvrajkarna.code@gmail.com"
-                href="mailto:yuvrajkarna.code@gmail.com"
+                value={CONTACT.email}
+                href={mailto}
               />
               <CopyableRow
                 icon={<Phone size={16} />}
                 label="Phone"
-                value="+91 7700833277"
-                href="tel:+917700833277"
+                value={CONTACT.phone}
+                href={telHref}
               />
               <CopyableRow
                 icon={<MapPin size={16} />}
                 label="Location"
-                value="India — Remote-ready"
+                value={CONTACT.location}
               />
             </div>
 

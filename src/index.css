@@ -13,6 +13,24 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Global keyboard focus ring ────────────────────────────────────────────
+   Only shows for keyboard navigation (:focus-visible), not mouse clicks.
+   Applies to every focusable element so interactive controls are always
+   reachable and visible for keyboard users. */
+:focus-visible {
+  outline: 2px solid #111827; /* gray-900 */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.dark :focus-visible {
+  outline-color: #f9fafb; /* gray-50 */
+}
+/* Never show the ring for mouse/touch focus. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 @keyframes typewriter {
   from {
     width: 0;
@@ -61,16 +79,31 @@ html {
 }
 .dark .hljs-keyword,
 .dark .hljs-selector-tag,
-.dark .hljs-built_in { color: #c678dd; }
+.dark .hljs-built_in {
+  color: #c678dd;
+}
 .dark .hljs-string,
-.dark .hljs-attr { color: #98c379; }
+.dark .hljs-attr {
+  color: #98c379;
+}
 .dark .hljs-number,
-.dark .hljs-literal { color: #d19a66; }
-.dark .hljs-comment { color: #5c6370; font-style: italic; }
+.dark .hljs-literal {
+  color: #d19a66;
+}
+.dark .hljs-comment {
+  color: #5c6370;
+  font-style: italic;
+}
 .dark .hljs-title,
-.dark .hljs-class .hljs-title { color: #61afef; }
+.dark .hljs-class .hljs-title {
+  color: #61afef;
+}
 .dark .hljs-variable,
-.dark .hljs-template-variable { color: #e06c75; }
+.dark .hljs-template-variable {
+  color: #e06c75;
+}
 .dark .hljs-type,
-.dark .hljs-params { color: #e5c07b; }
+.dark .hljs-params {
+  color: #e5c07b;
+}
 /* ─────────────────────────────────────────────────────────────────────────── */

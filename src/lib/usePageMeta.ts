@@ -14,6 +14,8 @@ interface PageMeta {
   image?: string;
   /** "website" (default) or "article". */
   type?: "website" | "article";
+  /** When true, emit robots noindex,nofollow (for private/auth-gated pages). */
+  noindex?: boolean;
 }
 
 function setMetaTag(attr: "name" | "property", key: string, content: string) {
@@ -50,6 +52,7 @@ export function usePageMeta({
   path = "/",
   image = DEFAULT_IMAGE,
   type = "website",
+  noindex = false,
 }: PageMeta) {
   useEffect(() => {
     const fullTitle = title ? `${title} | Yuvraj Karna` : DEFAULT_TITLE;
@@ -58,6 +61,7 @@ export function usePageMeta({
     document.title = fullTitle;
     setMetaTag("name", "title", fullTitle);
     setMetaTag("name", "description", description);
+    setMetaTag("name", "robots", noindex ? "noindex, nofollow" : "index, follow");
 
     setMetaTag("property", "og:type", type);
     setMetaTag("property", "og:url", url);
@@ -71,5 +75,5 @@ export function usePageMeta({
     setMetaTag("property", "twitter:image", image);
 
     setCanonical(url);
-  }, [title, description, path, image, type]);
+  }, [title, description, path, image, type, noindex]);
 }
