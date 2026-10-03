@@ -74,6 +74,13 @@ jobs:
         run: npm ci
 
       - name: Build
+        # Vite inlines VITE_* vars at build time. Without this the client
+        # falls back to a relative /api path and hits the Pages domain
+        # instead of the FastAPI backend on Render. The URL is public (it
+        # ships in the bundle), so a repo secret is optional — the fallback
+        # keeps the stats working if the secret is unset.
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL || 'https://yuvrajkarna-api.onrender.com' }}
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
